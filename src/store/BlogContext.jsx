@@ -6,6 +6,7 @@ export const BlogContext = createContext();
 export const BlogProvider = (props) => {
   const [myCategories, setMyCategories] = useState([]);
   const [myAnimes, setMyAnimes] = useState([]);
+  const [token, setToken] = useState("");
   const getCategories = async () => {
     await axios
       .get("https://blogsato-drf.herokuapp.com/api/category/list/")
@@ -23,7 +24,14 @@ export const BlogProvider = (props) => {
   }, []);
   return (
     <BlogContext.Provider
-      value={[myCategories, setMyCategories, myAnimes, setMyAnimes]}
+      value={[
+        myCategories,
+        setMyCategories,
+        myAnimes,
+        setMyAnimes,
+        token,
+        setToken,
+      ]}
     >
       {props.children}
     </BlogContext.Provider>
