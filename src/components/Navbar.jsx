@@ -14,7 +14,6 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { BlogContext } from "../store/BlogContext";
 
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
 const StyledMenu = styled((props) => (
   <Menu
     elevation={0}
@@ -59,7 +58,16 @@ const StyledMenu = styled((props) => (
 }));
 
 const Navbar = () => {
-  const [categories] = React.useContext(BlogContext);
+  const [
+    myCategories,
+    setMyCategories,
+    myAnimes,
+    setMyAnimes,
+    token,
+    setToken,
+  ] = React.useContext(BlogContext);
+  console.log(token);
+  const settings = token ? ["Add New Post", "Logout"] : ["Login", "Register"];
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -125,7 +133,7 @@ const Navbar = () => {
             open={open}
             onClose={handleClose}
           >
-            {categories.map((category) => (
+            {myCategories.map((category) => (
               <MenuItem key={category.id} onClick={handleClose} disableRipple>
                 {category.name}
               </MenuItem>
