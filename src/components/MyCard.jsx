@@ -77,43 +77,29 @@ const MyCard = ({ anime }) => {
         />
         <CardContent>
           <Typography variant="body2" color="text.secondary">
-            {anime.body.slice(0, 300)}
+            {anime.body.length > 300
+              ? anime.body.slice(0, 300) + " ..."
+              : anime.body}
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions disableSpacing>
-        <IconButton aria-label="like">
+      <CardActions sx={{ display: "flex" }} disableSpacing>
+        <IconButton sx={{ flexGrow: 1 }} aria-label="like">
           <Badge badgeContent={anime.likes_count} color="error">
             <FavoriteIcon />
           </Badge>
         </IconButton>
-        <IconButton aria-label="view">
+        <IconButton sx={{ flexGrow: 1 }} aria-label="view">
           <Badge badgeContent={anime.postviews_count} color="info">
             <VisibilityIcon />
           </Badge>
         </IconButton>
-        <IconButton aria-label="comment">
+        <IconButton sx={{ flexGrow: 1 }} aria-label="comment">
           <Badge badgeContent={anime.comments_count} color="success">
             <CommentIcon />
           </Badge>
         </IconButton>
-
-        <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore>
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            {anime.body.slice(200)}
-          </Typography>
-        </CardContent>
-      </Collapse>
     </Card>
   );
 };
