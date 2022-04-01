@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
+import { BlogContext } from "../store/BlogContext";
 import MyCard from "./MyCard";
 import "./mycards.css";
 
-const MyCards = (animes) => {
-  console.log(animes.animes.map((anime) => console.log(anime.title)));
+const MyCards = () => {
+  const [myCategories, setMyCategories, myAnimes, setMyAnimes] =
+    useContext(BlogContext);
   return (
     <div className="cards">
-      {animes.animes.map((anime) => (
-        <MyCard anime={anime} />
+      {myAnimes.map((anime) => (
+        <MyCard key={anime.id} anime={anime} />
       ))}
     </div>
   );

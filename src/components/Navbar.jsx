@@ -12,6 +12,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import { BlogContext } from "../store/BlogContext";
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 const StyledMenu = styled((props) => (
@@ -57,7 +58,8 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-const Navbar = (categories) => {
+const Navbar = () => {
+  const [categories] = React.useContext(BlogContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -123,16 +125,11 @@ const Navbar = (categories) => {
             open={open}
             onClose={handleClose}
           >
-            {categories.categories.map((category) => (
+            {categories.map((category) => (
               <MenuItem key={category.id} onClick={handleClose} disableRipple>
                 {category.name}
               </MenuItem>
             ))}
-            {/* {settings.map((setting) => (
-              <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">{setting}</Typography>
-              </MenuItem>
-            ))} */}
           </StyledMenu>
 
           <Box>

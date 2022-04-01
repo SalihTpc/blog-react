@@ -30,8 +30,7 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-const MyCard = (anime) => {
-  console.log(anime.anime);
+const MyCard = ({ anime }) => {
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
@@ -39,26 +38,27 @@ const MyCard = (anime) => {
   };
 
   return (
-    <Card sx={{ maxWidth: 345, m: 1 }}>
+    <Card sx={{ maxWidth: 345, m: 2 }}>
       <CardActionArea>
         <CardHeader
           avatar={
             <Avatar
-              sx={{ bgcolor: blue[100] }}
+              sx={{ bgcolor: blue[200] }}
               aria-label="recipe"
-              title={anime.anime.user}
-              alt={anime.anime.user.charAt(0).toUpperCase()}
+              title={anime.user}
+              alt={anime.user.charAt(0).toUpperCase()}
               src="/static/images/avatar/2.jpg"
             />
           }
           titleTypographyProps={{ variant: "h5", color: "black" }}
-          title={anime.anime.title}
-          subheader={anime.anime.since_creation}
+          title={anime.title}
+          subheader={anime.since_creation}
         />
         <Divider />
         <Box sx={{ display: "flex" }}>
-          {anime.anime.category.map((cate) => (
+          {anime.category.map((cate) => (
             <Typography
+              key={cate.id}
               sx={{ flexGrow: 1, mt: 0.5, ml: 2 }}
               color="text.secondary"
               display="block"
@@ -72,28 +72,28 @@ const MyCard = (anime) => {
         <CardMedia
           component="img"
           height="550"
-          image={anime.anime.image}
+          image={anime.image}
           alt="Paella dish"
         />
         <CardContent>
           <Typography variant="body2" color="text.secondary">
-            {anime.anime.body.slice(0, 200)}
+            {anime.body.slice(0, 300)}
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions disableSpacing>
         <IconButton aria-label="like">
-          <Badge badgeContent={anime.anime.likes_count} color="error">
+          <Badge badgeContent={anime.likes_count} color="error">
             <FavoriteIcon />
           </Badge>
         </IconButton>
         <IconButton aria-label="view">
-          <Badge badgeContent={anime.anime.postviews_count} color="info">
+          <Badge badgeContent={anime.postviews_count} color="info">
             <VisibilityIcon />
           </Badge>
         </IconButton>
         <IconButton aria-label="comment">
-          <Badge badgeContent={anime.anime.comment_count} color="success">
+          <Badge badgeContent={anime.comments_count} color="success">
             <CommentIcon />
           </Badge>
         </IconButton>
@@ -109,7 +109,9 @@ const MyCard = (anime) => {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography variant="body2">{anime.anime.body.slice(200)}</Typography>
+          <Typography variant="body2" color="text.secondary">
+            {anime.body.slice(200)}
+          </Typography>
         </CardContent>
       </Collapse>
     </Card>
