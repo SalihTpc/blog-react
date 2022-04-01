@@ -66,7 +66,7 @@ const Register = () => {
           console.log(error);
         }
       );
-    console.log(registerValues);
+    // console.log(registerValues);
   };
 
   return (
@@ -75,7 +75,7 @@ const Register = () => {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 2,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -102,6 +102,7 @@ const Register = () => {
                   label="Username"
                   name="username"
                   autoComplete="user-name"
+                  autoFocus
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -112,7 +113,6 @@ const Register = () => {
                   fullWidth
                   id="firstName"
                   label="First Name"
-                  autoFocus
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
