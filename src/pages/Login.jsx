@@ -3,8 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -12,6 +10,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import axios from "axios";
+import { BlogContext } from "../store/BlogContext";
 
 function Copyright(props) {
   return (
@@ -40,22 +40,42 @@ function GoToRegister(props) {
 
 const theme = createTheme();
 const Login = () => {
-  const handleSubmit = (event) => {
+  const [
+    myCategories,
+    setMyCategories,
+    myAnimes,
+    setMyAnimes,
+    token,
+    setToken,
+  ] = React.useContext(BlogContext);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const loginValues = {
+      username: data.get("username"),
       email: data.get("email"),
       password: data.get("password"),
-    });
+    };
+    await axios
+      .post("https://blogsato-drf.herokuapp.com/users/auth/login/", loginValues)
+      .then(
+        (response) => {
+          setToken(response.data.key);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
   };
-
+  console.log(token);
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 2,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -73,16 +93,29 @@ const Login = () => {
             noValidate
             sx={{ mt: 1 }}
           >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address or Username"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  id="username"
+                  label="Username"
+                  name="username"
+                  autoComplete="user-name"
+                />
+              </Grid>
+            </Grid>
             <TextField
               margin="normal"
               required
@@ -115,3 +148,18 @@ const Login = () => {
 };
 
 export default Login;
+
+// const sendPostRequest = async () => {
+//   try {
+//     const resp = await axios.post(
+//       "https://blogsato-drf.herokuapp.com/users/auth/login/",
+//       loginValues
+//     )
+//     console.log(resp.data.key)
+//   } catch {
+//     (err){
+//       console.error(err)
+//     };
+//   }
+// };
+// sendPostRequest();
