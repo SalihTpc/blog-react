@@ -83,18 +83,21 @@ const MyCard = ({ anime }) => {
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions sx={{ display: "flex" }} disableSpacing>
-        <IconButton sx={{ flexGrow: 1 }} aria-label="like">
+      <CardActions
+        sx={{ display: "flex", justifyContent: "space-around" }}
+        disableSpacing
+      >
+        <IconButton aria-label="like">
           <Badge badgeContent={anime.likes_count} color="error">
             <FavoriteIcon />
           </Badge>
         </IconButton>
-        <IconButton sx={{ flexGrow: 1 }} aria-label="view">
+        <IconButton aria-label="view">
           <Badge badgeContent={anime.postviews_count} color="info">
             <VisibilityIcon />
           </Badge>
         </IconButton>
-        <IconButton sx={{ flexGrow: 1 }} aria-label="comment">
+        <IconButton aria-label="comment">
           <Badge badgeContent={anime.comments_count} color="success">
             <CommentIcon />
           </Badge>
