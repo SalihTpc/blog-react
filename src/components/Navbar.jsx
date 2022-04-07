@@ -13,6 +13,8 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { BlogContext } from "../store/BlogContext";
+import { NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -58,16 +60,33 @@ const StyledMenu = styled((props) => (
 }));
 
 const Navbar = () => {
-  const [
-    myCategories,
-    setMyCategories,
-    myAnimes,
-    setMyAnimes,
-    token,
-    setToken,
-  ] = React.useContext(BlogContext);
-  console.log(token);
-  const settings = token ? ["Add New Post", "Logout"] : ["Login", "Register"];
+  // const [
+  //   myCategories,
+  //   setMyCategories,
+  //   myAnimes,
+  //   setMyAnimes,
+  //   token,
+  //   setToken,
+  //   user,
+  // ] = React.useContext(BlogContext);
+  const { myCategories, token, user } = React.useContext(BlogContext);
+  // console.log(user.user);
+  const navigate = useNavigate();
+  const logoutApi = async (token) => {
+    await axios.post(
+      "https://blogsato-drf.herokuapp.com/users/auth/logout/",
+      { withCredentials: true },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      }
+    );
+  };
+  const settings = token
+    ? ["New Post", "Password Change", "Logout"]
+    : ["Login", "Register"];
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -77,6 +96,13 @@ const Navbar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  const handleCloseAndLogoutUserMenu = () => {
+    logoutApi(token);
+    localStorage.removeItem("user");
+    window.location.reload(false);
+    setAnchorElUser(null);
+  };
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -85,6 +111,7 @@ const Navbar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  // console.log(user.lenght);
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -97,8 +124,14 @@ const Navbar = () => {
             noWrap
             component="div"
             sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
+            onClick={() => navigate("/")}
           >
-            AnimeBlog
+            <NavLink
+              style={{ textDecoration: "none", color: "white" }}
+              to={"/"}
+            >
+              AnimeBlog
+            </NavLink>
           </Typography>
           <Typography
             variant="h6"
@@ -106,11 +139,13 @@ const Navbar = () => {
             component="div"
             sx={{ display: { xs: "flex", md: "none" } }}
           >
-            <img
-              width="50"
-              src="https://anilist.co/img/icons/icon.svg"
-              alt=""
-            />
+            <NavLink style={{ textDecoration: "none" }} to={"/"}>
+              <img
+                width="50"
+                src="https://anilist.co/img/icons/icon.svg"
+                alt=""
+              />
+            </NavLink>
           </Typography>
           <Button
             id="demo-customized-button"
@@ -134,16 +169,29 @@ const Navbar = () => {
             onClose={handleClose}
           >
             {myCategories.map((category) => (
-              <MenuItem key={category.id} onClick={handleClose} disableRipple>
-                {category.name}
-              </MenuItem>
+              <NavLink
+                key={category.id}
+                style={{
+                  textDecoration: "none",
+                  color: "#616161",
+                }}
+                to={`/category/${category.name
+                  .toLowerCase()
+                  .replace(" ", "-")}`}
+              >
+                <MenuItem onClick={handleClose} disableRipple>
+                  {category.name}
+                </MenuItem>
+              </NavLink>
             ))}
           </StyledMenu>
-
           <Box>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Salih Topcu" src="/static/images/avatar/2.jpg" />
+                <Avatar
+                  alt={token ? `${user.user.username[0].toUpperCase()}` : "S"}
+                  src="/static/images/avatar/2.jpg"
+                />
               </IconButton>
             </Tooltip>
             <Menu
@@ -163,9 +211,25 @@ const Navbar = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
+                <NavLink
+                  key={setting}
+                  style={{ textDecoration: "none", color: "#424242" }}
+                  to={
+                    setting.toLowerCase() === "logout"
+                      ? "/"
+                      : `/${setting.replace(" ", "-").toLowerCase()}`
+                  }
+                >
+                  <MenuItem
+                    onClick={
+                      setting.toLowerCase() === "logout"
+                        ? handleCloseAndLogoutUserMenu
+                        : handleCloseUserMenu
+                    }
+                  >
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                </NavLink>
               ))}
             </Menu>
           </Box>
