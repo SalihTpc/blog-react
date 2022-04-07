@@ -4,14 +4,15 @@ import MyCard from "./MyCard";
 import "./mycards.css";
 
 const MyCards = () => {
-  const [
-    myCategories,
-    setMyCategories,
-    myAnimes,
-    setMyAnimes,
-    token,
-    setToken,
-  ] = useContext(BlogContext);
+  // const [
+  //   myCategories,
+  //   setMyCategories,
+  //   myAnimes,
+  //   setMyAnimes,
+  //   token,
+  //   setToken,
+  // ] = useContext(BlogContext);
+  const { myAnimes } = useContext(BlogContext);
   return (
     <div className="cards">
       {myAnimes.map((anime) => (
