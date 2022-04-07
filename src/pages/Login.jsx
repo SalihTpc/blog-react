@@ -11,7 +11,9 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
-import { BlogContext } from "../store/BlogContext";
+// import { BlogContext } from "../store/BlogContext";
+import { Formik } from "formik";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -40,15 +42,17 @@ function GoToRegister(props) {
 
 const theme = createTheme();
 const Login = () => {
-  const [
-    myCategories,
-    setMyCategories,
-    myAnimes,
-    setMyAnimes,
-    token,
-    setToken,
-  ] = React.useContext(BlogContext);
-
+  // const [
+  //   myCategories,
+  //   setMyCategories,
+  //   myAnimes,
+  //   setMyAnimes,
+  //   token,
+  //   setToken,
+  //   user,
+  //   setUser,
+  // ] = React.useContext(BlogContext);
+  let navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -61,14 +65,16 @@ const Login = () => {
       .post("https://blogsato-drf.herokuapp.com/users/auth/login/", loginValues)
       .then(
         (response) => {
-          setToken(response.data.key);
+          localStorage.setItem("user", JSON.stringify(response.data)); // locale atılacak.
         },
         (error) => {
           console.log(error);
         }
       );
+    navigate("/");
+    window.location.reload(false);
   };
-  console.log(token);
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -87,59 +93,61 @@ const Login = () => {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  margin="normal"
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  margin="normal"
-                  fullWidth
-                  id="username"
-                  label="Username"
-                  name="username"
-                  autoComplete="user-name"
-                />
-              </Grid>
-            </Grid>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+          <Formik>
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              noValidate
+              sx={{ mt: 1 }}
             >
-              Sign In
-            </Button>
-            <Grid justifyContent="center" container>
-              <Grid item>
-                <GoToRegister />
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                    autoFocus
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    name="username"
+                    autoComplete="user-name"
+                  />
+                </Grid>
               </Grid>
-            </Grid>
-          </Box>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
+              <Grid justifyContent="center" container>
+                <Grid item>
+                  <GoToRegister />
+                </Grid>
+              </Grid>
+            </Box>
+          </Formik>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
