@@ -1,10 +1,13 @@
 import React from "react";
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import { Triangle } from "react-loader-spinner";
+import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 
 const Loader = () => {
-  return;
-  <Triangle height="100" width="100" color="grey" ariaLabel="loading" />;
+  return (
+    <div>
+      {/* <h1>Loading...</h1> */}
+      <HourglassBottomIcon style={{ fontSize: 500 }} />
+    </div>
+  );
 };
 
 export default Loader;
