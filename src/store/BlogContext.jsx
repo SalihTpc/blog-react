@@ -21,11 +21,11 @@ export const BlogProvider = (props) => {
   };
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
+    setUser(JSON.parse(sessionStorage.getItem("user")));
     // console.log(user);
     setToken(
-      localStorage.getItem("user")
-        ? JSON.parse(localStorage.getItem("user")).key
+      sessionStorage.getItem("user")
+        ? JSON.parse(sessionStorage.getItem("user")).key
         : null
     );
     // console.log(token);
@@ -33,10 +33,10 @@ export const BlogProvider = (props) => {
     getCategories();
   }, []);
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
+    setUser(JSON.parse(sessionStorage.getItem("user")));
     setToken(
-      localStorage.getItem("user")
-        ? JSON.parse(localStorage.getItem("user")).key
+      sessionStorage.getItem("user")
+        ? JSON.parse(sessionStorage.getItem("user")).key
         : null
     );
   }, [isAuth]);

@@ -56,13 +56,13 @@ const Login = () => {
       .post("https://blogsato-drf.herokuapp.com/users/auth/login/", loginValues)
       .then(
         (response) => {
-          localStorage.setItem("user", JSON.stringify(response.data)); // locale atılacak.
+          sessionStorage.setItem("user", JSON.stringify(response.data)); // locale atılacak.
         },
         (error) => {
           console.log(error);
         }
       );
-    if (localStorage.getItem("user") === null) {
+    if (sessionStorage.getItem("user") === null) {
       setIsAuth(false);
     } else {
       setIsAuth(true);

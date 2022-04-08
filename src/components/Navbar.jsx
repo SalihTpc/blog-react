@@ -100,9 +100,9 @@ const Navbar = () => {
   };
   const handleCloseAndLogoutUserMenu = () => {
     setAnchorElUser(null);
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     logoutApi(token);
-    if (localStorage.getItem("user") === null) {
+    if (sessionStorage.getItem("user") === null) {
       setIsAuth(false);
     } else {
       setIsAuth(true);
