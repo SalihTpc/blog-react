@@ -69,7 +69,8 @@ const Navbar = () => {
   //   setToken,
   //   user,
   // ] = React.useContext(BlogContext);
-  const { myCategories, token, user } = React.useContext(BlogContext);
+  const { myCategories, token, user, isAuth, setIsAuth } =
+    React.useContext(BlogContext);
   // console.log(user.user);
   const navigate = useNavigate();
   const logoutApi = async (token) => {
@@ -84,9 +85,10 @@ const Navbar = () => {
       }
     );
   };
-  const settings = token
-    ? ["New Post", "Password Change", "Logout"]
+  let settings = isAuth
+    ? ["New Post", "Change Password", "Logout"]
     : ["Login", "Register"];
+
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -97,10 +99,15 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
   const handleCloseAndLogoutUserMenu = () => {
-    logoutApi(token);
-    localStorage.removeItem("user");
-    window.location.reload(false);
     setAnchorElUser(null);
+    localStorage.removeItem("user");
+    logoutApi(token);
+    if (localStorage.getItem("user") === null) {
+      setIsAuth(false);
+    } else {
+      setIsAuth(true);
+    }
+    // window.location.reload(false);
   };
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -231,6 +238,21 @@ const Navbar = () => {
                   </MenuItem>
                 </NavLink>
               ))}
+              {/* {token ? (
+                <div>
+                  <MenuItem onClick={() => navigate("/new")}>New</MenuItem>
+                  <MenuItem onClick={() => handleCloseAndLogoutUserMenu()}>
+                    Logout
+                  </MenuItem>
+                </div>
+              ) : (
+                <div>
+                  <MenuItem onClick={() => navigate("/login")}>Login</MenuItem>
+                  <MenuItem onClick={() => navigate("/register")}>
+                    Register
+                  </MenuItem>
+                </div>
+              )} */}
             </Menu>
           </Box>
         </Toolbar>

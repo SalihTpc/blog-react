@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
-// import { BlogContext } from "../store/BlogContext";
+import { BlogContext } from "../store/BlogContext";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 
@@ -42,16 +42,7 @@ function GoToRegister(props) {
 
 const theme = createTheme();
 const Login = () => {
-  // const [
-  //   myCategories,
-  //   setMyCategories,
-  //   myAnimes,
-  //   setMyAnimes,
-  //   token,
-  //   setToken,
-  //   user,
-  //   setUser,
-  // ] = React.useContext(BlogContext);
+  const { setIsAuth } = React.useContext(BlogContext);
   let navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -71,8 +62,13 @@ const Login = () => {
           console.log(error);
         }
       );
+    if (localStorage.getItem("user") === null) {
+      setIsAuth(false);
+    } else {
+      setIsAuth(true);
+    }
     navigate("/");
-    window.location.reload(false);
+    // window.location.reload(false);
   };
 
   return (

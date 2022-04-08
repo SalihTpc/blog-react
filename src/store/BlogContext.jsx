@@ -8,6 +8,7 @@ export const BlogProvider = (props) => {
   const [myAnimes, setMyAnimes] = useState([]);
   const [token, setToken] = useState(""); //localden alınacak
   const [user, setUser] = useState({});
+  const [isAuth, setIsAuth] = useState(false);
   const getCategories = async () => {
     await axios
       .get("https://blogsato-drf.herokuapp.com/api/category/list/")
@@ -31,6 +32,15 @@ export const BlogProvider = (props) => {
     getAnimes();
     getCategories();
   }, []);
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")));
+    setToken(
+      localStorage.getItem("user")
+        ? JSON.parse(localStorage.getItem("user")).key
+        : null
+    );
+  }, [isAuth]);
+
   const values = {
     myCategories,
     setMyCategories,
@@ -40,6 +50,8 @@ export const BlogProvider = (props) => {
     setToken,
     user,
     setUser,
+    isAuth,
+    setIsAuth,
   };
 
   return (
