@@ -9,6 +9,7 @@ export const BlogProvider = (props) => {
   const [token, setToken] = useState(""); //localden alınacak
   const [user, setUser] = useState({});
   const [isAuth, setIsAuth] = useState(false);
+  const [load, setLoad] = useState(false);
   const getCategories = async () => {
     await axios
       .get("https://blogsato-drf.herokuapp.com/api/category/list/")
@@ -52,6 +53,8 @@ export const BlogProvider = (props) => {
     setUser,
     isAuth,
     setIsAuth,
+    load,
+    setLoad,
   };
 
   return (
