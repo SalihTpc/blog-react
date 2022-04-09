@@ -217,6 +217,15 @@ const Navbar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
+              {isAuth ? (
+                <MenuItem disabled>
+                  <Typography textAlign="center">
+                    {user.user.username.charAt(0).toUpperCase() +
+                      user.user.username.slice(1)}
+                  </Typography>
+                </MenuItem>
+              ) : null}
+
               {settings.map((setting) => (
                 <NavLink
                   key={setting}
@@ -238,21 +247,6 @@ const Navbar = () => {
                   </MenuItem>
                 </NavLink>
               ))}
-              {/* {token ? (
-                <div>
-                  <MenuItem onClick={() => navigate("/new")}>New</MenuItem>
-                  <MenuItem onClick={() => handleCloseAndLogoutUserMenu()}>
-                    Logout
-                  </MenuItem>
-                </div>
-              ) : (
-                <div>
-                  <MenuItem onClick={() => navigate("/login")}>Login</MenuItem>
-                  <MenuItem onClick={() => navigate("/register")}>
-                    Register
-                  </MenuItem>
-                </div>
-              )} */}
             </Menu>
           </Box>
         </Toolbar>
