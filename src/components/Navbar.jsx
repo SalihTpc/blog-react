@@ -60,18 +60,8 @@ const StyledMenu = styled((props) => (
 }));
 
 const Navbar = () => {
-  // const [
-  //   myCategories,
-  //   setMyCategories,
-  //   myAnimes,
-  //   setMyAnimes,
-  //   token,
-  //   setToken,
-  //   user,
-  // ] = React.useContext(BlogContext);
-  const { myCategories, token, user, isAuth, setIsAuth } =
+  const { myCategories, token, user, setUser, isAuth, setIsAuth } =
     React.useContext(BlogContext);
-  // console.log(user.user);
   const navigate = useNavigate();
   const logoutApi = async (token) => {
     await axios.post(
@@ -98,16 +88,13 @@ const Navbar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
   const handleCloseAndLogoutUserMenu = () => {
     setAnchorElUser(null);
-    sessionStorage.removeItem("user");
     logoutApi(token);
-    if (sessionStorage.getItem("user") === null) {
-      setIsAuth(false);
-    } else {
-      setIsAuth(true);
-    }
-    // window.location.reload(false);
+    sessionStorage.clear();
+    setUser({});
+    setIsAuth(false);
   };
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -118,7 +105,6 @@ const Navbar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  // console.log(user.lenght);
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -192,15 +178,24 @@ const Navbar = () => {
               </NavLink>
             ))}
           </StyledMenu>
+
           <Box>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar
-                  alt={token ? `${user.user.username[0].toUpperCase()}` : "S"}
-                  src="/static/images/avatar/2.jpg"
-                />
-              </IconButton>
-            </Tooltip>
+            {user?.username ? (
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar
+                    alt={user ? user.username[0].toUpperCase() : "S"}
+                    src="/static/images/avatar/2.jpg"
+                  />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt={"S"} src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+            )}
             <Menu
               sx={{ mt: "45px" }}
               id="menu-appbar"
@@ -220,8 +215,10 @@ const Navbar = () => {
               {isAuth ? (
                 <MenuItem disabled>
                   <Typography textAlign="center">
-                    {user.user.username.charAt(0).toUpperCase() +
-                      user.user.username.slice(1)}
+                    {user?.username
+                      ? user.username.charAt(0).toUpperCase() +
+                        user.username.slice(1)
+                      : "Sato"}
                   </Typography>
                 </MenuItem>
               ) : null}
