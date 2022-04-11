@@ -1,21 +1,26 @@
 import * as React from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  Link,
+  Grid,
+  Box,
+  Typography,
+  Container,
+} from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 import { BlogContext } from "../store/BlogContext";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import { errorNote, successNote } from "../helper/toastNotify";
 
 function Copyright(props) {
+  let navigate = useNavigate();
   return (
     <Typography
       variant="body2"
@@ -24,7 +29,15 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="/about">
+      <Link
+        sx={{
+          fontWeight: "600",
+          paddingLeft: "0.5rem",
+          cursor: "pointer",
+          color: "inherit",
+        }}
+        onClick={() => navigate("/about")}
+      >
         About
       </Link>{" "}
       {new Date().getFullYear()}
@@ -33,47 +46,65 @@ function Copyright(props) {
   );
 }
 function GoToRegister(props) {
+  let navigate = useNavigate();
   return (
-    <Link color="inherit" variant="body2" href="/register">
+    <Link color="inherit" variant="body2" onClick={() => navigate("/register")}>
       Don't have an account? Sign Up
     </Link>
   );
 }
+const signUpValidationSchema = Yup.object().shape({
+  //! En az 2 karakter olması lazım. olmazsa yanına yazdığımız mesajı
+  email: Yup.string().email("Invalid Email"),
+  username: Yup.string().min(2, "Username must be at least 2 characters"),
+  password: Yup.string()
+    .required("No password provided")
+    .min(8, "Password is too short - should be 8 chars minimum")
+    .matches(/\d+/, "Password must have a number")
+    .matches(/[a-z]+/, "Password must have a lowercase")
+    .matches(/[A-Z]+/, "Password must have a uppercase"),
+});
 
 const theme = createTheme();
 const Login = () => {
-  const { setIsAuth } = React.useContext(BlogContext);
+  const { setIsAuth, isAuth, setLoad } = React.useContext(BlogContext);
   let navigate = useNavigate();
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const loginValues = {
-      username: data.get("username"),
-      email: data.get("email"),
-      password: data.get("password"),
-    };
-    await axios
-      .post("https://blogsato-drf.herokuapp.com/users/auth/login/", loginValues)
-      .then(
-        (response) => {
-          sessionStorage.setItem("user", JSON.stringify(response.data)); // locale atılacak.
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    if (sessionStorage.getItem("user") === null) {
-      setIsAuth(false);
-    } else {
+  const initialValues = {
+    email: "",
+    username: "",
+    password: "",
+  };
+  const handleSubmit = async (values) => {
+    try {
+      await axios
+        .post("https://blogsato-drf.herokuapp.com/users/auth/login/", values)
+        .then(function (response) {
+          // console.log(response.data.key);
+          sessionStorage.setItem("key", response.data.key);
+        });
       setIsAuth(true);
+      // console.log(isAuth);
+      successNote("Login Successful");
+      navigate("/");
+    } catch (error) {
+      errorNote(error.response.data.non_field_errors[0]);
+      setIsAuth(false);
     }
-    navigate("/");
-    // window.location.reload(false);
+  };
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+    borderRadius: 10,
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" sx={style}>
         <CssBaseline />
         <Box
           sx={{
@@ -89,60 +120,94 @@ const Login = () => {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Formik>
-            <Box
-              component="form"
-              onSubmit={handleSubmit}
-              noValidate
-              sx={{ mt: 1 }}
-            >
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    margin="normal"
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
-                    autoFocus
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    margin="normal"
-                    fullWidth
-                    id="username"
-                    label="Username"
-                    name="username"
-                    autoComplete="user-name"
-                  />
-                </Grid>
-              </Grid>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+          <Formik
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            //! Yup ile hazırladığımız validationu buraya gönderiyoruz.
+            validationSchema={signUpValidationSchema}
+          >
+            {/* //!Bütün formu curly braces içerisine alıyoruz. Ve arrow function kullanarak bütün değişkenleri burada tanımlıyoruz. Ayrıca değerleri destructuring yapmak önemli  */}
+            {({
+              //!Parametre olarak tanımladığımız (values) değişkenleri TextField içerisinde value değişkenlerine atıyoruz.
+              values,
+              handleChange,
+              //! handleSubmit önce burada, daha sonra Formik içerisinde tanımlıyoruz. Müteakiben fonksiyonu yukarıda oluşturuyoruz.
+              handleSubmit,
+              //! touched and errors and handleBlur--> validation hatasını almak için eklememiz gerekiyor.
+              touched,
+              errors,
+              //! handleBlur --> focustan yani inputtan çıktığımızda blur oluyor.
+              handleBlur,
+            }) => (
+              <Box
+                component="form"
+                onSubmit={handleSubmit}
+                noValidate
+                sx={{ mt: 1 }}
               >
-                Sign In
-              </Button>
-              <Grid justifyContent="center" container>
-                <Grid item>
-                  <GoToRegister />
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      margin="normal"
+                      fullWidth
+                      id="email"
+                      label="Email Address"
+                      name="email"
+                      autoComplete="email"
+                      value={values.email}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      helperText={touched.email && errors.email}
+                      error={touched.email && Boolean(errors.email)}
+                      autoFocus
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      margin="normal"
+                      fullWidth
+                      id="username"
+                      label="Username"
+                      name="username"
+                      autoComplete="user-name"
+                      value={values.username}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      helperText={touched.username && errors.username}
+                      error={touched.username && Boolean(errors.username)}
+                    />
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Box>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  helperText={touched.password && errors.password}
+                  error={touched.password && Boolean(errors.password)}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Sign In
+                </Button>
+                <Grid justifyContent="center" container>
+                  <Grid item>
+                    <GoToRegister />
+                  </Grid>
+                </Grid>
+              </Box>
+            )}
           </Formik>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
@@ -152,18 +217,3 @@ const Login = () => {
 };
 
 export default Login;
-
-// const sendPostRequest = async () => {
-//   try {
-//     const resp = await axios.post(
-//       "https://blogsato-drf.herokuapp.com/users/auth/login/",
-//       loginValues
-//     )
-//     console.log(resp.data.key)
-//   } catch {
-//     (err){
-//       console.error(err)
-//     };
-//   }
-// };
-// sendPostRequest();
