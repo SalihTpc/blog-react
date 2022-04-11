@@ -15,11 +15,13 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { CardActionArea } from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 import Badge from "@mui/material/Badge";
+import { useNavigate } from "react-router-dom";
 
 const MyCard = ({ anime }) => {
+  let navigate = useNavigate();
   return (
     <Card sx={{ maxWidth: 345, m: 2 }}>
-      <CardActionArea>
+      <CardActionArea onClick={() => navigate(`/post-detail/${anime.id}`)}>
         <CardHeader
           avatar={
             <Avatar
