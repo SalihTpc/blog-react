@@ -7,7 +7,13 @@ export const BlogProvider = (props) => {
   const [myCategories, setMyCategories] = useState([]);
   const [myAnimes, setMyAnimes] = useState([]);
   const [token, setToken] = useState(""); //localden alınacak
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({
+    pk: null,
+    username: "",
+    email: "",
+    first_name: "",
+    last_name: "",
+  });
   const [isAuth, setIsAuth] = useState(false);
   const [load, setLoad] = useState(false);
   const getCategories = async () => {
@@ -26,24 +32,37 @@ export const BlogProvider = (props) => {
   };
 
   useEffect(() => {
-    setUser(JSON.parse(sessionStorage.getItem("user")));
-    // console.log(user);
-    setToken(
-      sessionStorage.getItem("user")
-        ? JSON.parse(sessionStorage.getItem("user")).key
-        : null
-    );
-    // console.log(token);
     getAnimes();
     getCategories();
   }, []);
+  const getUser = async () => {
+    let userTemp = {
+      ...user,
+    };
+    setLoad(true);
+    const { data } = await axios({
+      method: "get",
+      url: "https://blogsato-drf.herokuapp.com/users/auth/user/",
+      headers: { Authorization: `Token ${sessionStorage.getItem("key")}` },
+    });
+    // console.log(data);
+    userTemp = {
+      pk: data.pk,
+      username: data.username,
+      email: data.email,
+      first_name: data.first_name,
+      last_name: data.last_name,
+    };
+    setUser(userTemp);
+    console.log(user);
+    setLoad(false);
+  };
   useEffect(() => {
-    setUser(JSON.parse(sessionStorage.getItem("user")));
-    setToken(
-      sessionStorage.getItem("user")
-        ? JSON.parse(sessionStorage.getItem("user")).key
-        : null
-    );
+    if (isAuth) {
+      setToken(sessionStorage.getItem("key"));
+      // console.log(token);
+      getUser();
+    }
   }, [isAuth]);
 
   const values = {
