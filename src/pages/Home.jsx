@@ -5,10 +5,11 @@ import Loader from "../components/Loader";
 import { BlogContext } from "../store/BlogContext";
 
 const Home = () => {
-  const { load } = useContext(BlogContext);
+  const { load, user } = useContext(BlogContext);
   return (
     <div className="home">
       <Navbar />
+      <h1>{user.username}</h1>
       {/* <MyCards /> */}
       {load ? <Loader /> : <MyCards />}
     </div>
