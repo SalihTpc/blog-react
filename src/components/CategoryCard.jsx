@@ -16,11 +16,13 @@ import { CardActionArea } from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 import Badge from "@mui/material/Badge";
 import "./categorycard.css";
+import { useNavigate } from "react-router-dom";
 
 const CategoryCard = ({ post }) => {
+  let navigate = useNavigate();
   return (
     <Card key={post.id} sx={{ maxWidth: 345, m: 2 }}>
-      <CardActionArea>
+      <CardActionArea onClick={() => navigate(`/post-detail/${post.id}`)}>
         <CardHeader
           avatar={
             <Avatar
