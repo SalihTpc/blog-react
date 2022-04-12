@@ -17,13 +17,33 @@ const AppRouter = () => {
     }
     return children;
   }
+  function RequireNotAuth({ children, redirectTo }) {
+    if (isAuth) {
+      return <Navigate to={redirectTo} />;
+    }
+    return children;
+  }
   return (
     <BrowserRouter>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/login"
+          element={
+            <RequireNotAuth redirectTo={"/"}>
+              <Login />
+            </RequireNotAuth>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <RequireNotAuth redirectTo={"/"}>
+              <Register />
+            </RequireNotAuth>
+          }
+        />
         <Route path="/category/:str" element={<CategoryDetail />} />
         <Route
           path="/post-detail/:id"
