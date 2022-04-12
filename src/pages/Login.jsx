@@ -67,7 +67,7 @@ const signUpValidationSchema = Yup.object().shape({
 
 const theme = createTheme();
 const Login = () => {
-  const { setIsAuth, isAuth, setLoad } = React.useContext(BlogContext);
+  const { setIsAuth } = React.useContext(BlogContext);
   let navigate = useNavigate();
   const initialValues = {
     email: "",
@@ -88,7 +88,6 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       errorNote(error.response.data.non_field_errors[0]);
-      alert(error.response.data.non_field_errors[0]);
       setIsAuth(false);
     }
   };
