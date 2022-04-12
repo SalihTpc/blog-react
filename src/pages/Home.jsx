@@ -8,7 +8,6 @@ const Home = () => {
   const { load, user } = useContext(BlogContext);
   return (
     <div className="home">
-      <Navbar />
       <h1>{user.username}</h1>
       {/* <MyCards /> */}
       {load ? <Loader /> : <MyCards />}
