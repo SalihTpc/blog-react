@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 
 const MyCard = ({ anime }) => {
   let navigate = useNavigate();
+
   return (
     <Card sx={{ maxWidth: 345, m: 2 }}>
       <CardActionArea onClick={() => navigate(`/post-detail/${anime.id}`)}>
