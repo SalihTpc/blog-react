@@ -13,7 +13,6 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
-import { BlogContext } from "../store/BlogContext";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
@@ -65,7 +64,6 @@ const passwordChangeValidationSchema = Yup.object().shape({
 
 const theme = createTheme();
 const PasswordChange = () => {
-  const { setIsAuth, isAuth, setLoad } = React.useContext(BlogContext);
   let navigate = useNavigate();
   const initialValues = {
     old_password: "",
@@ -95,6 +93,7 @@ const PasswordChange = () => {
     } catch (error) {
       //   errorNote(error.response.data.non_field_errors[0]);
       console.log(error.response.status, error.response.data.old_password[0]);
+      errorNote(error.response.data.old_password[0]);
     }
   };
   const style = {
