@@ -32,7 +32,7 @@ function Copyright(props) {
           cursor: "pointer",
           color: "inherit",
         }}
-        onClick={() => navigate("/login")}
+        onClick={() => navigate("/about")}
       >
         About
       </Link>{" "}
