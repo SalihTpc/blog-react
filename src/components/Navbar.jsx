@@ -15,6 +15,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { BlogContext } from "../store/BlogContext";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { errorNote, successNote } from "../helper/toastNotify";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -64,16 +65,23 @@ const Navbar = () => {
     React.useContext(BlogContext);
   const navigate = useNavigate();
   const logoutApi = async (token) => {
-    await axios.post(
-      "https://blogsato-drf.herokuapp.com/users/auth/logout/",
-      { withCredentials: true },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${token}`,
-        },
-      }
-    );
+    try {
+      await axios
+        .post(
+          "https://blogsato-drf.herokuapp.com/users/auth/logout/",
+          { withCredentials: true },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${token}`,
+            },
+          }
+        )
+        .then((response) => successNote(response.data.detail));
+      // successNote("User Logged Out Succesfully!!!");
+    } catch (error) {
+      errorNote(error.response.data.non_field_errors[0]);
+    }
   };
   let settings = isAuth
     ? ["New Post", "Change Password", "Logout"]
