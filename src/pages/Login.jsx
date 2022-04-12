@@ -88,6 +88,7 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       errorNote(error.response.data.non_field_errors[0]);
+      alert(error.response.data.non_field_errors[0]);
       setIsAuth(false);
     }
   };
