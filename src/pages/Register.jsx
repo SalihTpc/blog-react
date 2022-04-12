@@ -14,6 +14,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
+import { errorNote, successNote } from "../helper/toastNotify";
 
 function Copyright(props) {
   const navigate = useNavigate();
@@ -109,28 +110,19 @@ const Register = () => {
     password2: "",
   };
   const handleSubmit = async (values, { resetForm }) => {
-    // const data = new FormData(event.currentTarget);
-    // const registerValues = {
-    //   username: data.get("username"),
-    //   first_name: data.get("first_name"),
-    //   last_name: data.get("last_name"),
-    //   email: data.get("email"),
-    //   password: data.get("password"),
-    //   password2: data.get("password2"),
-    // };
-    console.log(values);
-    await axios
-      .post("https://blogsato-drf.herokuapp.com/users/auth/register/", values)
-      .then(
-        (response) => {
-          console.log(response.request.status, response.data.message);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+    // console.log(values);
+    try {
+      await axios
+        .post("https://blogsato-drf.herokuapp.com/users/auth/register/", values)
+        .then((response) => {
+          successNote(response.data.message);
+        });
+      navigate("/login");
+    } catch (error) {
+      errorNote(error.response.data.username[0]);
+    }
+
     resetForm();
-    navigate("/login");
   };
 
   return (
