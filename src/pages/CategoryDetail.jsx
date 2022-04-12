@@ -22,7 +22,6 @@ const CategoryDetail = () => {
   }, [str]);
   return (
     <div className="categoryposts">
-      <Navbar />
       {load ? (
         <Loader />
       ) : (
