@@ -6,14 +6,9 @@ export const BlogContext = createContext();
 export const BlogProvider = (props) => {
   const [myCategories, setMyCategories] = useState([]);
   const [myAnimes, setMyAnimes] = useState([]);
+  const [nextUrl, setNextUrl] = useState("");
   const [token, setToken] = useState(""); //localden alınacak
-  const [user, setUser] = useState({
-    pk: null,
-    username: "",
-    email: "",
-    first_name: "",
-    last_name: "",
-  });
+  const [user, setUser] = useState({});
   const [isAuth, setIsAuth] = useState(false);
   const [load, setLoad] = useState(false);
   const getCategories = async () => {
@@ -27,36 +22,35 @@ export const BlogProvider = (props) => {
     setLoad(true);
     await axios
       .get("https://blogsato-drf.herokuapp.com/api/list/")
-      .then((response) => setMyAnimes(response.data.results));
+      .then(function (response) {
+        setMyAnimes(response.data.results);
+        setNextUrl(response.data.next);
+      });
     setLoad(false);
   };
-
-  useEffect(() => {
-    getAnimes();
-    getCategories();
-  }, []);
   const getUser = async () => {
-    let userTemp = {
-      ...user,
-    };
-    setLoad(true);
+    // let userTemp = {
+    //   ...user,
+    // };
+
     const { data } = await axios({
       method: "get",
       url: "https://blogsato-drf.herokuapp.com/users/auth/user/",
       headers: { Authorization: `Token ${sessionStorage.getItem("key")}` },
     });
-    // console.log(data);
-    userTemp = {
-      pk: data.pk,
-      username: data.username,
-      email: data.email,
-      first_name: data.first_name,
-      last_name: data.last_name,
-    };
-    setUser(userTemp);
-    console.log(user);
-    setLoad(false);
+    setIsAuth(true);
+    setUser(data);
+    // console.log(user);
   };
+
+  useEffect(() => {
+    if (sessionStorage.getItem("key")) {
+      getUser();
+    }
+    getAnimes();
+    getCategories();
+  }, []);
+
   useEffect(() => {
     if (isAuth) {
       setToken(sessionStorage.getItem("key"));
@@ -65,6 +59,7 @@ export const BlogProvider = (props) => {
     }
   }, [isAuth]);
 
+  // console.log(nextUrl);
   const values = {
     myCategories,
     setMyCategories,
@@ -78,6 +73,8 @@ export const BlogProvider = (props) => {
     setIsAuth,
     load,
     setLoad,
+    nextUrl,
+    setNextUrl,
   };
 
   return (
