@@ -246,7 +246,7 @@ const Register = () => {
                       label="Password"
                       type="password"
                       id="password"
-                      autoComplete="new-password"
+                      autoComplete="password"
                       value={values.password}
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -262,7 +262,7 @@ const Register = () => {
                       label="Password2"
                       type="password"
                       id="password2"
-                      autoComplete="new-password2"
+                      autoComplete="password2"
                       value={values.password2}
                       onChange={handleChange}
                       onBlur={handleBlur}
