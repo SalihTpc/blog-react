@@ -11,7 +11,7 @@ export const BlogProvider = (props) => {
   const [user, setUser] = useState({});
   const [isAuth, setIsAuth] = useState(false);
   const [load, setLoad] = useState(false);
-  const [categoryList, setCategoryList] = useState([]);
+
   const getCategories = async () => {
     setLoad(true);
     await axios
@@ -19,7 +19,6 @@ export const BlogProvider = (props) => {
       .then(function (response) {
         setMyCategories(response.data);
       });
-    setCategoryList(myCategories.map((cat) => cat.name));
     setLoad(false);
   };
   const getAnimes = async () => {
@@ -79,7 +78,6 @@ export const BlogProvider = (props) => {
     setLoad,
     nextUrl,
     setNextUrl,
-    categoryList,
   };
 
   return (

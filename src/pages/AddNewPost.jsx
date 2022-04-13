@@ -1,4 +1,3 @@
-import CategoryChoise from "../components/CategoryChoise";
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -15,7 +14,6 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import { errorNote, successNote } from "../helper/toastNotify";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { useTheme } from "@mui/material/styles";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -67,7 +65,7 @@ const signUpValidationSchema = Yup.object().shape({
 
 const AddNewPost = () => {
   const navigate = useNavigate();
-  const { myCategories, categoryList } = React.useContext(BlogContext);
+  const { myCategories } = React.useContext(BlogContext);
   const style = {
     width: 375,
     bgcolor: "background.paper",
@@ -76,18 +74,7 @@ const AddNewPost = () => {
     borderRadius: 10,
   };
 
-  const themee = useTheme();
-  const [personName, setPersonName] = React.useState([]);
-  const [categories, setCategories] = React.useState([]);
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
+  const [categoryName, setCategoryName] = React.useState([]);
 
   const initialValues = {
     category: [],
@@ -206,7 +193,11 @@ const AddNewPost = () => {
                           <MenuItem
                             key={category.id}
                             value={category.name}
-                            style={getStyles(category.name, personName, themee)}
+                            style={getStyles(
+                              category.name,
+                              categoryName,
+                              theme
+                            )}
                           >
                             {category.name}
                           </MenuItem>
