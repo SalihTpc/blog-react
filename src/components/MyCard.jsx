@@ -38,8 +38,8 @@ const MyCard = ({ anime }) => {
           subheader={anime.since_creation}
         />
         <Divider />
-        <Box sx={{ display: "flex" }}>
-          {anime.category.map((cate) => (
+        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+          {anime.category?.map((cate) => (
             <Typography
               key={cate.id}
               sx={{ flexGrow: 1, mt: 0.5, ml: 2 }}
