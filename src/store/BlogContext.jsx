@@ -11,11 +11,15 @@ export const BlogProvider = (props) => {
   const [user, setUser] = useState({});
   const [isAuth, setIsAuth] = useState(false);
   const [load, setLoad] = useState(false);
+  const [categoryList, setCategoryList] = useState([]);
   const getCategories = async () => {
     setLoad(true);
     await axios
       .get("https://blogsato-drf.herokuapp.com/api/category/list/")
-      .then((response) => setMyCategories(response.data));
+      .then(function (response) {
+        setMyCategories(response.data);
+      });
+    setCategoryList(myCategories.map((cat) => cat.name));
     setLoad(false);
   };
   const getAnimes = async () => {
@@ -75,6 +79,7 @@ export const BlogProvider = (props) => {
     setLoad,
     nextUrl,
     setNextUrl,
+    categoryList,
   };
 
   return (
