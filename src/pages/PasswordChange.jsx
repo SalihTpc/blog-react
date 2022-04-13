@@ -72,7 +72,7 @@ const PasswordChange = () => {
   };
 
   const handleSubmit = async (values) => {
-    console.log(values);
+    // console.log(values);
     try {
       await axios
         .post(
@@ -92,7 +92,7 @@ const PasswordChange = () => {
       navigate("/");
     } catch (error) {
       //   errorNote(error.response.data.non_field_errors[0]);
-      console.log(error.response.status, error.response.data.old_password[0]);
+      // console.log(error.response.status, error.response.data.old_password[0]);
       errorNote(error.response.data.old_password[0]);
     }
   };
