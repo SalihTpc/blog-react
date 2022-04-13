@@ -117,7 +117,10 @@ const Navbar = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar
-          sx={{ display: "flex", justifyContent: "space-between" }}
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
           disableGutters
         >
           <Typography
@@ -128,7 +131,12 @@ const Navbar = () => {
             onClick={() => navigate("/")}
           >
             <NavLink
-              style={{ textDecoration: "none", color: "white" }}
+              style={{
+                textDecoration: "none",
+                color: "white",
+                fontFamily: "Leckerli One",
+                fontSize: "1.5rem",
+              }}
               to={"/"}
             >
               AnimeBlog
@@ -138,12 +146,12 @@ const Navbar = () => {
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: "flex", md: "none" } }}
+            sx={{ display: { mt: 2, xs: "flex", md: "none" } }}
           >
             <NavLink style={{ textDecoration: "none" }} to={"/"}>
               <img
                 width="50"
-                src="https://anilist.co/img/icons/icon.svg"
+                src="https://eksiup.com/images/26/63/7u558215qkum.png"
                 alt=""
               />
             </NavLink>
