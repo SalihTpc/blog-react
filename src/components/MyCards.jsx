@@ -14,7 +14,7 @@ const MyCards = () => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     p: 2,
-    borderRadius: 10,
+    borderRadius: 6,
     boxShadow: 24,
     mb: 3,
   };
@@ -35,20 +35,22 @@ const MyCards = () => {
       {load ? (
         <Loader />
       ) : (
-        <div className="cards">
-          {myAnimes.map((anime) => (
-            <MyCard key={anime.id} anime={anime} />
-          ))}
-        </div>
+        <>
+          <div className="cards">
+            {myAnimes.map((anime) => (
+              <MyCard key={anime.id} anime={anime} />
+            ))}
+          </div>
+          <Button
+            disabled={nextUrl === null}
+            sx={style}
+            onClick={getMoreAnimes}
+            variant="outlined"
+          >
+            Load More
+          </Button>
+        </>
       )}
-      <Button
-        disabled={nextUrl === null}
-        sx={style}
-        onClick={getMoreAnimes}
-        variant="outlined"
-      >
-        Load More
-      </Button>
     </div>
   );
 };
