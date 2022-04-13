@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import AddNewPost from "../pages/AddNewPost";
 import CategoryDetail from "../pages/CategoryDetail";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
@@ -58,6 +59,14 @@ const AppRouter = () => {
           element={
             <RequireAuth redirectTo={"/login"}>
               <PasswordChange />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/new-post"
+          element={
+            <RequireAuth redirectTo={"/login"}>
+              <AddNewPost />
             </RequireAuth>
           }
         />
