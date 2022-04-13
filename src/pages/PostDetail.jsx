@@ -18,6 +18,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import Comments from "../components/Comments";
+import Loader from "../components/Loader";
 
 const Container = styled.div`
   align-items: center;
@@ -54,7 +55,9 @@ const PostDetail = () => {
 
   return (
     <Container>
-      <React.Suspense fallback={<h1>Loading PostDetail...</h1>}>
+      {loading ? (
+        <Loader />
+      ) : (
         <Card sx={{ m: 2, maxWidth: 1035 }}>
           {selectedPost?.user ? (
             <div>
@@ -128,37 +131,45 @@ const PostDetail = () => {
             </div>
           ) : null}
         </Card>
-        {selectedPost?.comment_post?.length === 0 ? (
-          <Grid item xs={12} sm={12} md={12}>
-            <Typography
-              style={{ fontFamily: "Permanent Marker", marginLeft: "30px" }}
-              variant="body2"
-              sx={{ color: "#c9c9c9", m: 2 }}
-            >
-              No Comments YET...
-            </Typography>
-          </Grid>
-        ) : (
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            md={12}
-            container
-            direction="columnn"
-            justifyContent="center"
+      )}
+      {/* <React.Suspense fallback={<h1>Loading PostDetail...</h1>}> */}
+
+      {selectedPost?.comment_post?.length === 0 ? (
+        <Grid item xs={12} sm={12} md={12}>
+          <Typography
+            style={{ fontFamily: "Permanent Marker", marginLeft: "30px" }}
+            variant="body2"
+            sx={{ color: "#c9c9c9", m: 2 }}
           >
-            {selectedPost?.comment_post?.map((comment) => (
-              <List
-                key={comment.id}
-                sx={{ width: "95%", maxWidth: 1180, bgcolor: "#1c1f26" }}
-              >
-                <Comments comment={comment} />
-              </List>
-            ))}
-          </Grid>
-        )}
-      </React.Suspense>
+            No Comments YET...
+          </Typography>
+        </Grid>
+      ) : (
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          container
+          direction="columnn"
+          justifyContent="center"
+        >
+          {selectedPost?.comment_post?.map((comment) => (
+            <List
+              key={comment.id}
+              sx={{
+                width: "95%",
+                maxWidth: "md",
+                bgcolor: "background.paper",
+              }}
+            >
+              <Comments comment={comment} />
+            </List>
+          ))}
+        </Grid>
+      )}
+
+      {/* </React.Suspense> */}
     </Container>
   );
 };
