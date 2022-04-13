@@ -1,10 +1,14 @@
 import React from "react";
 import CategoryCard from "../components/CategoryCard";
-import Navbar from "../components/Navbar";
 import { useParams } from "react-router-dom";
 import { BlogContext } from "../store/BlogContext";
 import axios from "axios";
 import Loader from "../components/Loader";
+import styled from "styled-components";
+
+const MyTag = styled.h1`
+  text-align: center;
+`;
 
 const CategoryDetail = () => {
   const { str } = useParams();
@@ -21,15 +25,20 @@ const CategoryDetail = () => {
     getSelectedCategories();
   }, [str]);
   return (
-    <div className="categoryposts">
-      {load ? (
-        <Loader />
-      ) : (
-        selectedCategoryPosts.map((post) => (
-          <CategoryCard key={post.id} post={post} />
-        ))
-      )}
-    </div>
+    <>
+      <MyTag>
+        Animes the category of {str.charAt(0).toUpperCase() + str.slice(1)}
+      </MyTag>
+      <div className="categoryposts">
+        {load ? (
+          <Loader />
+        ) : (
+          selectedCategoryPosts.map((post) => (
+            <CategoryCard key={post.id} post={post} />
+          ))
+        )}
+      </div>
+    </>
   );
 };
 
