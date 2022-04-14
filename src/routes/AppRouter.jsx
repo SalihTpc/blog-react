@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import About from "../pages/About";
 import AddNewPost from "../pages/AddNewPost";
 import CategoryDetail from "../pages/CategoryDetail";
 import Home from "../pages/Home";
@@ -70,6 +71,7 @@ const AppRouter = () => {
             </RequireAuth>
           }
         />
+        <Route path="/about" element={<About />} />
       </Routes>
     </BrowserRouter>
   );
