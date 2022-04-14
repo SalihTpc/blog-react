@@ -65,7 +65,8 @@ const signUpValidationSchema = Yup.object().shape({
 
 const AddNewPost = () => {
   const navigate = useNavigate();
-  const { myCategories } = React.useContext(BlogContext);
+  const { myCategories, myChanges, setMyChanges } =
+    React.useContext(BlogContext);
   const style = {
     width: 375,
     bgcolor: "background.paper",
@@ -75,7 +76,7 @@ const AddNewPost = () => {
   };
 
   const [categoryName, setCategoryName] = React.useState([]);
-
+  console.log(myChanges);
   const initialValues = {
     category: [],
     title: "",
@@ -103,12 +104,13 @@ const AddNewPost = () => {
           // console.log(response.data);
           successNote(response.data.message);
         });
+
       navigate("/");
     } catch (error) {
       console.log(error.response.data);
       errorNote(error.response.data.title[0]);
     }
-
+    setMyChanges(!myChanges);
     resetForm();
   };
   return (

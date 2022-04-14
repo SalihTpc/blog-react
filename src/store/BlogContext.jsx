@@ -11,6 +11,7 @@ export const BlogProvider = (props) => {
   const [user, setUser] = useState({});
   const [isAuth, setIsAuth] = useState(false);
   const [load, setLoad] = useState(false);
+  const [myChanges, setMyChanges] = useState(false);
 
   const getCategories = async () => {
     setLoad(true);
@@ -60,7 +61,9 @@ export const BlogProvider = (props) => {
       // console.log(token);
       getUser();
     }
-  }, [isAuth]);
+    getAnimes();
+    getCategories();
+  }, [isAuth, myChanges]);
 
   // console.log(nextUrl);
   const values = {
@@ -78,6 +81,8 @@ export const BlogProvider = (props) => {
     setLoad,
     nextUrl,
     setNextUrl,
+    myChanges,
+    setMyChanges,
   };
 
   return (
