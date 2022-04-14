@@ -139,7 +139,7 @@ const Navbar = () => {
               }}
               to={"/"}
             >
-              AnimeBlog
+              AniBlog
             </NavLink>
           </Typography>
           <Typography
@@ -230,7 +230,7 @@ const Navbar = () => {
             >
               {isAuth ? (
                 <MenuItem disabled>
-                  <Typography textAlign="center">
+                  <Typography>
                     {user?.username
                       ? user.username.charAt(0).toUpperCase() +
                         user.username.slice(1)
