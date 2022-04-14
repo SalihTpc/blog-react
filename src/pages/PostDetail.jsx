@@ -11,14 +11,16 @@ import { blue } from "@mui/material/colors";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Divider from "@mui/material/Divider";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { Grid, Box, List } from "@mui/material";
+import { Grid, Box, List, Button } from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 import Badge from "@mui/material/Badge";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import Comments from "../components/Comments";
 import Loader from "../components/Loader";
+import { BlogContext } from "../store/BlogContext";
+import { errorNote, successNote } from "../helper/toastNotify";
 
 const Container = styled.div`
   align-items: center;
@@ -29,12 +31,15 @@ const Container = styled.div`
 
 const PostDetail = () => {
   const { id } = useParams();
+  const { user, myChanges, setMyChanges } = React.useContext(BlogContext);
+  const [myId, setMyId] = React.useState();
   const [selectedPost, setSelectedPost] = React.useState({});
   const [loading, setLoading] = React.useState(false);
+  let navigate = useNavigate();
 
-  const getPostdet = async (id) => {
+  const getPostdet = (id) => {
     setLoading(true);
-    await axios
+    axios
       .get(`https://blogsato-drf.herokuapp.com/api/list/${id}/`, {
         headers: { Authorization: `Token ${sessionStorage.getItem("key")}` },
       })
@@ -46,12 +51,82 @@ const PostDetail = () => {
     setLoading(false);
   };
 
+  const delPost = (id) => {
+    setLoading(true);
+    try {
+      axios
+        .delete(`https://blogsato-drf.herokuapp.com/api/list/${id}/`, {
+          headers: { Authorization: `Token ${sessionStorage.getItem("key")}` },
+        })
+        .then(function (response) {
+          // console.log(response.data.message);
+          successNote(response.data.message);
+        });
+      navigate("/");
+    } catch (error) {
+      console.log(error.response.data.detail);
+      errorNote(error.response.data.detail);
+    }
+    setMyChanges(!myChanges);
+    setLoading(false);
+  };
+  const viewPost = async (id) => {
+    setLoading(true);
+    const value = { post: id };
+    try {
+      await axios
+        .post(
+          `https://blogsato-drf.herokuapp.com/api/list/${id}/view/`,
+          value,
+          {
+            headers: {
+              Authorization: `Token ${sessionStorage.getItem("key")}`,
+            },
+          }
+        )
+        .then(function (response) {
+          // console.log(response.data.user);
+          successNote(`${response.data.user} viewed the Post`);
+        });
+      // navigate("/");
+      setMyChanges(!myChanges);
+    } catch (error) {
+      // console.log(error.response.data.non_field_errors[0]);
+      errorNote(error.response.data.non_field_errors[0]);
+    }
+    setLoading(false);
+  };
+  const likePost = async (id) => {
+    setLoading(true);
+    const value = { post: id };
+    try {
+      await axios
+        .post(
+          `https://blogsato-drf.herokuapp.com/api/list/${id}/like/`,
+          value,
+          {
+            headers: {
+              Authorization: `Token ${sessionStorage.getItem("key")}`,
+            },
+          }
+        )
+        .then(function (response) {
+          // console.log(response.data.user);
+          successNote(`${response.data.user} liked the Post`);
+        });
+      // navigate("/");
+      setMyChanges(!myChanges);
+    } catch (error) {
+      // console.log(error.response.data.non_field_errors[0]);
+      errorNote(error.response.data.non_field_errors[0]);
+    }
+    setLoading(false);
+  };
+
   React.useEffect(() => {
-    // getPostdet(id);
+    setMyId(id);
     getPostdet(id);
   }, []);
-  // console.log(id);
-  // console.log(selectedPost);
 
   return (
     <Container>
@@ -106,12 +181,12 @@ const PostDetail = () => {
                 sx={{ display: "flex", justifyContent: "space-around" }}
                 disableSpacing
               >
-                <IconButton aria-label="like">
+                <IconButton onClick={() => likePost(myId)} aria-label="like">
                   <Badge badgeContent={selectedPost.likes_count} color="error">
                     <FavoriteIcon />
                   </Badge>
                 </IconButton>
-                <IconButton aria-label="view">
+                <IconButton onClick={() => viewPost(myId)} aria-label="view">
                   <Badge
                     badgeContent={selectedPost.postviews_count}
                     color="info"
@@ -132,7 +207,6 @@ const PostDetail = () => {
           ) : null}
         </Card>
       )}
-      {/* <React.Suspense fallback={<h1>Loading PostDetail...</h1>}> */}
 
       {selectedPost?.comment_post?.length === 0 ? (
         <Grid item xs={12} sm={12} md={12}>
@@ -151,7 +225,7 @@ const PostDetail = () => {
           sm={12}
           md={12}
           container
-          direction="columnn"
+          flexDirection="columnn"
           justifyContent="center"
         >
           {selectedPost?.comment_post?.map((comment) => (
@@ -168,8 +242,14 @@ const PostDetail = () => {
           ))}
         </Grid>
       )}
-
-      {/* </React.Suspense> */}
+      <Button
+        disabled={user?.username !== selectedPost.user}
+        onClick={() => delPost(myId)}
+        variant="contained"
+        size="large"
+      >
+        DELETE
+      </Button>
     </Container>
   );
 };
