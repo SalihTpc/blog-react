@@ -1,14 +1,13 @@
 import React from "react";
-import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
+import { Triangle } from "react-loader-spinner";
+import "./loader.css";
 
 const Loader = () => {
-  const myStyle = {
-    textAlign: "center",
-  };
   return (
-    <div style={myStyle}>
-      {/* <h1>Loading...</h1> */}
-      <HourglassBottomIcon style={{ fontSize: 500 }} />
+    <div className="loader">
+      <div className="container">
+        <Triangle color="#1976D2" height="400" width="440" />
+      </div>
     </div>
   );
 };
