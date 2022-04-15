@@ -11,7 +11,8 @@ import { blue } from "@mui/material/colors";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Divider from "@mui/material/Divider";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { Grid, Box, List, Button } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import { Grid, Box, List, Button, TextField, ButtonGroup } from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 import Badge from "@mui/material/Badge";
 import { useNavigate, useParams } from "react-router-dom";
@@ -35,7 +36,21 @@ const PostDetail = () => {
   const [myId, setMyId] = React.useState();
   const [selectedPost, setSelectedPost] = React.useState({});
   const [loading, setLoading] = React.useState(false);
+  const [commentValue, setCommentValue] = React.useState("");
+
   let navigate = useNavigate();
+
+  const myStyle1 = {
+    position: "relative",
+    width: "95%",
+  };
+
+  const myStyle = {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    right: "1%",
+  };
 
   const getPostdet = (id) => {
     setLoading(true);
@@ -62,12 +77,12 @@ const PostDetail = () => {
           // console.log(response.data.message);
           successNote(response.data.message);
         });
+      setMyChanges(!myChanges);
       navigate("/");
     } catch (error) {
       console.log(error.response.data.detail);
       errorNote(error.response.data.detail);
     }
-    setMyChanges(!myChanges);
     setLoading(false);
   };
   const viewPost = async (id) => {
@@ -114,13 +129,51 @@ const PostDetail = () => {
           // console.log(response.data.user);
           successNote(`${response.data.user} liked the Post`);
         });
-      // navigate("/");
       setMyChanges(!myChanges);
     } catch (error) {
       // console.log(error.response.data.non_field_errors[0]);
       errorNote(error.response.data.non_field_errors[0]);
     }
     setLoading(false);
+  };
+
+  const CommentPost = async (id, value) => {
+    setLoading(true);
+    try {
+      await axios
+        .post(
+          `https://blogsato-drf.herokuapp.com/api/list/${id}/comment/`,
+          value,
+          {
+            headers: {
+              Authorization: `Token ${sessionStorage.getItem("key")}`,
+            },
+          }
+        )
+        .then(function (response) {
+          // console.log(response.data.message);
+          successNote(response.data.message);
+        });
+      setCommentValue("");
+      setMyChanges(!myChanges);
+    } catch (error) {
+      console.log(error.response.data);
+      // errorNote(error.response.data.non_field_errors[0]);
+    }
+    setLoading(false);
+  };
+  const inputTextHandler = (e) => {
+    setCommentValue(e.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const value = {
+      post: myId,
+      content: data.get("comment"),
+    };
+    CommentPost(myId, value);
   };
 
   React.useEffect(() => {
@@ -194,19 +247,52 @@ const PostDetail = () => {
                     <VisibilityIcon />
                   </Badge>
                 </IconButton>
-                <IconButton aria-label="comment">
-                  <Badge
-                    badgeContent={selectedPost.comments_count}
-                    color="success"
-                  >
-                    <CommentIcon />
-                  </Badge>
-                </IconButton>
+                {/* <IconButton aria-label="comment"> */}
+                <Badge
+                  badgeContent={selectedPost.comments_count}
+                  color="success"
+                >
+                  <CommentIcon />
+                </Badge>
+                {/* </IconButton> */}
               </CardActions>
             </div>
           ) : null}
         </Card>
       )}
+      <Box
+        component="form"
+        noValidate
+        onSubmit={handleSubmit}
+        sx={{
+          width: 900,
+          maxWidth: "100%",
+          mb: 2,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div style={myStyle1}>
+          <TextField
+            inputProps={{
+              style: {
+                paddingRight: 45,
+              },
+            }}
+            value={commentValue}
+            onChange={inputTextHandler}
+            fullWidth
+            required
+            label="Comment"
+            id="comment"
+            name="comment"
+          />
+          <IconButton type="submit" style={myStyle} aria-label="comment">
+            <SendIcon size="large" />
+          </IconButton>
+        </div>
+      </Box>
 
       {selectedPost?.comment_post?.length === 0 ? (
         <Grid item xs={12} sm={12} md={12}>
@@ -242,14 +328,24 @@ const PostDetail = () => {
           ))}
         </Grid>
       )}
-      <Button
-        disabled={user?.username !== selectedPost.user}
-        onClick={() => delPost(myId)}
-        variant="contained"
-        size="large"
-      >
-        DELETE
-      </Button>
+      <ButtonGroup size="large" aria-label="large button group">
+        <Button
+          disabled={user?.username !== selectedPost.user}
+          // onClick={() => delPost(myId)}
+          variant="contained"
+          size="large"
+        >
+          EDIT
+        </Button>
+        <Button
+          disabled={user?.username !== selectedPost.user}
+          onClick={() => delPost(myId)}
+          variant="contained"
+          size="large"
+        >
+          DELETE
+        </Button>
+      </ButtonGroup>
     </Container>
   );
 };
