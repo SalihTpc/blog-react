@@ -181,8 +181,8 @@ const AddNewPost = () => {
                             maxHeight: 100,
                           },
                         }}
-                        helpertext={touched.username && errors.username}
-                        error={touched.username && Boolean(errors.username)}
+                        helpertext={touched.category && errors.category}
+                        error={touched.category && Boolean(errors.category)}
                         input={<OutlinedInput id="Tag" label="Category" />}
                         renderValue={(selected) => (
                           <Box

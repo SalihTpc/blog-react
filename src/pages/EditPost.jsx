@@ -63,21 +63,52 @@ const signUpValidationSchema = Yup.object().shape({
     .nullable(),
 });
 
+const style = {
+  width: 375,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+  borderRadius: 10,
+};
+
 const EditPost = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { myCategories, myChanges, setMyChanges } =
     React.useContext(BlogContext);
-  const style = {
-    width: 375,
-    bgcolor: "background.paper",
-    boxShadow: 24,
-    p: 4,
-    borderRadius: 10,
-  };
-
+  const [editPost, setEditPost] = React.useState(null);
+  const [myNotFound, setMyNotFound] = React.useState(null);
   const [categoryName, setCategoryName] = React.useState([]);
   // console.log(myChanges);
+  const getEditPost = async (id) => {
+    try {
+      await axios
+        .get(`https://blogsato-drf.herokuapp.com/api/list/${id}/`, {
+          headers: { Authorization: `Token ${sessionStorage.getItem("key")}` },
+        })
+        .then(function (response) {
+          console.log(response.data);
+          // console.log(response.data.body);
+          setEditPost(response.data);
+          console.log(editPost);
+        });
+    } catch (error) {
+      // console.log(error.response.status);
+      setMyNotFound(error.response.status);
+    }
+  };
+
+  console.log(editPost);
+  // const categoryList = editPost.category.map((cate) => cate.name);
+  // console.log(categoryList);
+  // const formValues = {
+  //   category: categoryList,
+  //   title: editPost.title,
+  //   image: editPost.image,
+  //   body: editPost.body,
+  // };
+  // console.log(formValues);
+
   const initialValues = {
     category: [],
     title: "",
@@ -114,6 +145,22 @@ const EditPost = () => {
 
     // resetForm();
   };
+
+  React.useEffect(() => {
+    getEditPost(id);
+  }, [id]);
+
+  // console.log(editPost);
+  // const categoryList = editPost.category.map((cate) => cate.name);
+  // console.log(categoryList);
+  // const formValues = {
+  //   category: categoryList,
+  //   title: editPost.title,
+  //   image: editPost.image,
+  //   body: editPost.body,
+  // };
+  // console.log(formValues);
+
   return (
     <ThemeProvider theme={theme}>
       <MyContainer>
@@ -134,10 +181,12 @@ const EditPost = () => {
               Add New Anime
             </Typography>
             <Formik
+              // initialValues={formValues || initialValues}
               initialValues={initialValues}
               onSubmit={handleSubmit}
               //! Yup ile hazırladığımız validationu buraya gönderiyoruz.
               validationSchema={signUpValidationSchema}
+              enableReinitialize
             >
               {/* //!Bütün formu curly braces içerisine alıyoruz. Ve arrow function kullanarak bütün değişkenleri burada tanımlıyoruz. Ayrıca değerleri destructuring yapmak önemli  */}
               {({
@@ -178,8 +227,8 @@ const EditPost = () => {
                         value={values.category}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        helpertext={touched.username && errors.username}
-                        error={touched.username && Boolean(errors.username)}
+                        helpertext={touched.category && errors.category}
+                        error={touched.category && Boolean(errors.category)}
                         input={<OutlinedInput id="Tag" label="Category" />}
                         renderValue={(selected) => (
                           <Box

@@ -46,7 +46,7 @@ const modalStyle = {
   maxWidth: "100%",
   boxShadow: 24,
   borderRadius: 10,
-  opacity: 0.7,
+  opacity: 0.9,
   bgcolor: "background.paper",
   p: 1,
 };
@@ -71,6 +71,7 @@ const PostDetail = () => {
   const [commentValue, setCommentValue] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [myNotFound, setMyNotFound] = React.useState();
+  const [detailUpdate, setDetailUpdate] = React.useState(true);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -115,7 +116,6 @@ const PostDetail = () => {
     setLoading(false);
   };
   const viewPost = async (id) => {
-    setLoading(true);
     const value = { post: id };
     try {
       await axios
@@ -132,16 +132,14 @@ const PostDetail = () => {
           // console.log(response.data.user);
           successNote(`${response.data.user} viewed the Post`);
         });
-      // navigate("/");
+      setDetailUpdate(!detailUpdate);
       setMyChanges(!myChanges);
     } catch (error) {
       // console.log(error.response.data.non_field_errors[0]);
       errorNote(error.response.data.non_field_errors[0]);
     }
-    setLoading(false);
   };
   const likePost = async (id) => {
-    setLoading(true);
     const value = { post: id };
     try {
       await axios
@@ -158,12 +156,12 @@ const PostDetail = () => {
           // console.log(response.data.user);
           successNote(`${response.data.user} liked the Post`);
         });
+      setDetailUpdate(!detailUpdate);
       setMyChanges(!myChanges);
     } catch (error) {
       // console.log(error.response.data.non_field_errors[0]);
       errorNote(error.response.data.non_field_errors[0]);
     }
-    setLoading(false);
   };
 
   const CommentPost = async (id, value) => {
@@ -183,14 +181,16 @@ const PostDetail = () => {
           // console.log(response.data.message);
           successNote(response.data.message);
         });
-      setCommentValue("");
+      setDetailUpdate(!detailUpdate);
       setMyChanges(!myChanges);
+      setCommentValue("");
     } catch (error) {
       // console.log(error.response.data.content[0]);
       errorNote(error.response.data.content[0]);
     }
     setLoading(false);
   };
+
   const inputTextHandler = (e) => {
     setCommentValue(e.target.value);
   };
@@ -210,11 +210,19 @@ const PostDetail = () => {
   React.useEffect(() => {
     setMyId(id);
     getPostdet(id);
-  }, []);
+  }, [id]);
 
   React.useEffect(() => {
-    myNotFound === 404 ? navigate("/") : console.log("detail exists.");
-  }, [myNotFound]);
+    if (myNotFound === 404) {
+      if (typeof selectedPost !== "undefined") {
+        navigate("/");
+      }
+    }
+  }, [navigate, selectedPost, myNotFound]);
+
+  React.useEffect(() => {
+    getPostdet(id);
+  }, [id, detailUpdate]);
 
   return (
     <Container>
@@ -257,7 +265,7 @@ const PostDetail = () => {
                 component="img"
                 height="550"
                 image={selectedPost.image}
-                alt="Paella dish"
+                alt="There is no image at this url!!"
               />
               <CardContent>
                 <Typography variant="body2" color="text.secondary">
@@ -323,7 +331,12 @@ const PostDetail = () => {
             id="comment"
             name="comment"
           />
-          <IconButton type="submit" style={myStyle} aria-label="comment">
+          <IconButton
+            disabled={commentValue.length === 0}
+            type="submit"
+            style={myStyle}
+            aria-label="comment"
+          >
             <SendIcon size="large" />
           </IconButton>
         </div>
@@ -358,7 +371,7 @@ const PostDetail = () => {
                 bgcolor: "background.paper",
               }}
             >
-              <Comments comment={comment} />
+              <Comments key={comment.id} comment={comment} />
             </List>
           ))}
         </Grid>
