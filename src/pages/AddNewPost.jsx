@@ -76,7 +76,7 @@ const AddNewPost = () => {
   };
 
   const [categoryName, setCategoryName] = React.useState([]);
-  console.log(myChanges);
+  // console.log(myChanges);
   const initialValues = {
     category: [],
     title: "",
@@ -104,13 +104,13 @@ const AddNewPost = () => {
           // console.log(response.data);
           successNote(response.data.message);
         });
-
+      setMyChanges(!myChanges);
       navigate("/");
     } catch (error) {
       console.log(error.response.data);
       errorNote(error.response.data.title[0]);
     }
-    setMyChanges(!myChanges);
+
     resetForm();
   };
   return (
