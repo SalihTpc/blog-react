@@ -1,29 +1,30 @@
-import React, { useContext } from "react";
+import React from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import About from "../pages/About";
 import AddNewPost from "../pages/AddNewPost";
 import CategoryDetail from "../pages/CategoryDetail";
+import EditPost from "../pages/EditPost";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import PasswordChange from "../pages/PasswordChange";
 import PostDetail from "../pages/PostDetail";
 import Register from "../pages/Register";
-import { BlogContext } from "../store/BlogContext";
 
 const AppRouter = () => {
-  const { isAuth } = useContext(BlogContext);
   function RequireAuth({ children, redirectTo }) {
-    if (!isAuth) {
-      return <Navigate to={redirectTo} />;
-    }
-    return children;
+    return sessionStorage.getItem("key") ? (
+      children
+    ) : (
+      <Navigate to={redirectTo} />
+    );
   }
   function RequireNotAuth({ children, redirectTo }) {
-    if (isAuth) {
-      return <Navigate to={redirectTo} />;
-    }
-    return children;
+    return sessionStorage.getItem("key") ? (
+      <Navigate to={redirectTo} />
+    ) : (
+      children
+    );
   }
   return (
     <BrowserRouter>
@@ -68,6 +69,14 @@ const AppRouter = () => {
           element={
             <RequireAuth redirectTo={"/login"}>
               <AddNewPost />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/edit-post/:id"
+          element={
+            <RequireAuth redirectTo={"/login"}>
+              <EditPost />
             </RequireAuth>
           }
         />
