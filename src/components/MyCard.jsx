@@ -16,9 +16,62 @@ import { CardActionArea } from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 import Badge from "@mui/material/Badge";
 import { useNavigate } from "react-router-dom";
+import { errorNote, successNote } from "../helper/toastNotify";
+import axios from "axios";
+import { BlogContext } from "../store/BlogContext";
 
 const MyCard = ({ anime }) => {
   let navigate = useNavigate();
+  const { myChanges, setMyChanges } = React.useContext(BlogContext);
+
+  const viewPost = async (id) => {
+    const value = { post: id };
+    try {
+      await axios
+        .post(
+          `https://blogsato-drf.herokuapp.com/api/list/${id}/view/`,
+          value,
+          {
+            headers: {
+              Authorization: `Token ${sessionStorage.getItem("key")}`,
+            },
+          }
+        )
+        .then(function (response) {
+          // console.log(response.data.user);
+          successNote(`${response.data.user} viewed the Post`);
+        });
+      // navigate("/");
+      setMyChanges(!myChanges);
+    } catch (error) {
+      // console.log(error.response.data.non_field_errors[0]);
+      errorNote(error.response.data.non_field_errors[0]);
+    }
+  };
+  const likePost = async (id) => {
+    const value = { post: id };
+    try {
+      await axios
+        .post(
+          `https://blogsato-drf.herokuapp.com/api/list/${id}/like/`,
+          value,
+          {
+            headers: {
+              Authorization: `Token ${sessionStorage.getItem("key")}`,
+            },
+          }
+        )
+        .then(function (response) {
+          // console.log(response.data.user);
+          successNote(`${response.data.user} liked the Post`);
+        });
+      // navigate("/");
+      setMyChanges(!myChanges);
+    } catch (error) {
+      // console.log(error.response.data.non_field_errors[0]);
+      errorNote(error.response.data.non_field_errors[0]);
+    }
+  };
 
   return (
     <Card sx={{ maxWidth: 345, m: 2 }}>
@@ -70,12 +123,12 @@ const MyCard = ({ anime }) => {
         sx={{ display: "flex", justifyContent: "space-around" }}
         disableSpacing
       >
-        <IconButton aria-label="like">
+        <IconButton onClick={() => likePost(anime.id)} aria-label="like">
           <Badge badgeContent={anime.likes_count} color="error">
             <FavoriteIcon />
           </Badge>
         </IconButton>
-        <IconButton aria-label="view">
+        <IconButton onClick={() => viewPost(anime.id)} aria-label="view">
           <Badge badgeContent={anime.postviews_count} color="info">
             <VisibilityIcon />
           </Badge>
