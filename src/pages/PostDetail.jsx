@@ -12,7 +12,16 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import Divider from "@mui/material/Divider";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import SendIcon from "@mui/icons-material/Send";
-import { Grid, Box, List, Button, TextField, ButtonGroup } from "@mui/material";
+import {
+  Grid,
+  Box,
+  List,
+  Button,
+  TextField,
+  ButtonGroup,
+  Modal,
+  Tooltip,
+} from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 import Badge from "@mui/material/Badge";
 import { useNavigate, useParams } from "react-router-dom";
@@ -29,6 +38,29 @@ const Container = styled.div`
   justify-content: center;
   flex-direction: column;
 `;
+const modalStyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  maxWidth: "100%",
+  boxShadow: 24,
+  borderRadius: 10,
+  opacity: 0.7,
+  bgcolor: "background.paper",
+  p: 1,
+};
+const myStyle1 = {
+  position: "relative",
+  width: "95%",
+};
+
+const myStyle = {
+  position: "absolute",
+  top: 0,
+  bottom: 0,
+  right: "1%",
+};
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -37,35 +69,32 @@ const PostDetail = () => {
   const [selectedPost, setSelectedPost] = React.useState({});
   const [loading, setLoading] = React.useState(false);
   const [commentValue, setCommentValue] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const [myNotFound, setMyNotFound] = React.useState();
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   let navigate = useNavigate();
 
-  const myStyle1 = {
-    position: "relative",
-    width: "95%",
-  };
-
-  const myStyle = {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    right: "1%",
-  };
-
-  const getPostdet = (id) => {
+  const getPostdet = async (id) => {
     setLoading(true);
-    axios
-      .get(`https://blogsato-drf.herokuapp.com/api/list/${id}/`, {
-        headers: { Authorization: `Token ${sessionStorage.getItem("key")}` },
-      })
-      .then(function (response) {
-        // console.log(response.data);
-        // console.log(response.data.body);
-        setSelectedPost(response.data);
-      });
+    try {
+      await axios
+        .get(`https://blogsato-drf.herokuapp.com/api/list/${id}/`, {
+          headers: { Authorization: `Token ${sessionStorage.getItem("key")}` },
+        })
+        .then(function (response) {
+          // console.log(response);
+          // console.log(response.data.body);
+          setSelectedPost(response.data);
+        });
+    } catch (error) {
+      // console.log(error.response.status);
+      setMyNotFound(error.response.status);
+    }
     setLoading(false);
   };
-
+  // console.log(myNotFound);
   const delPost = (id) => {
     setLoading(true);
     try {
@@ -157,8 +186,8 @@ const PostDetail = () => {
       setCommentValue("");
       setMyChanges(!myChanges);
     } catch (error) {
-      console.log(error.response.data);
-      // errorNote(error.response.data.non_field_errors[0]);
+      // console.log(error.response.data.content[0]);
+      errorNote(error.response.data.content[0]);
     }
     setLoading(false);
   };
@@ -173,13 +202,19 @@ const PostDetail = () => {
       post: myId,
       content: data.get("comment"),
     };
-    CommentPost(myId, value);
+    data.get("comment").length === 0
+      ? errorNote("Comment can not be blank!!")
+      : CommentPost(myId, value);
   };
 
   React.useEffect(() => {
     setMyId(id);
     getPostdet(id);
   }, []);
+
+  React.useEffect(() => {
+    myNotFound === 404 ? navigate("/") : console.log("detail exists.");
+  }, [myNotFound]);
 
   return (
     <Container>
@@ -328,10 +363,10 @@ const PostDetail = () => {
           ))}
         </Grid>
       )}
-      <ButtonGroup size="large" aria-label="large button group">
+      <ButtonGroup sx={{ m: 3 }} size="large" aria-label="large button group">
         <Button
           disabled={user?.username !== selectedPost.user}
-          // onClick={() => delPost(myId)}
+          onClick={() => navigate(`/edit-post/${myId}`)}
           variant="contained"
           size="large"
         >
@@ -339,13 +374,52 @@ const PostDetail = () => {
         </Button>
         <Button
           disabled={user?.username !== selectedPost.user}
-          onClick={() => delPost(myId)}
+          //
+          onClick={handleOpen}
           variant="contained"
           size="large"
+          color="error"
         >
           DELETE
         </Button>
       </ButtonGroup>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              "& > *": {
+                m: 1,
+              },
+            }}
+          >
+            <Typography
+              sx={{ mt: 4, mb: 4, textAlign: "center" }}
+              color="error"
+              variant="h3"
+            >
+              Are you sure to delete awesome post?
+            </Typography>
+            <ButtonGroup size="large" aria-label="large button group">
+              <Tooltip title="Cancel" placement="bottom-start">
+                <Button onClick={handleClose}>CANCEL</Button>
+              </Tooltip>
+              <Tooltip title="Delete" placement="bottom-start">
+                <Button onClick={() => delPost(myId)} color="error">
+                  DELETE
+                </Button>
+              </Tooltip>
+            </ButtonGroup>
+          </Box>
+        </Box>
+      </Modal>
     </Container>
   );
 };
