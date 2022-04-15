@@ -109,7 +109,7 @@ const MyCard = ({ anime }) => {
           component="img"
           height="550"
           image={anime.image}
-          alt="Paella dish"
+          alt="There is no image at this url"
         />
         <CardContent>
           <Typography variant="body2" color="text.secondary">
