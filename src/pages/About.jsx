@@ -1,5 +1,5 @@
-import React from "react";
 import Loader from "../components/Loader";
+import * as React from "react";
 
 const About = () => {
   return (
