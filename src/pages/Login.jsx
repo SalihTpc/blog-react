@@ -45,6 +45,18 @@ function Copyright(props) {
     </Typography>
   );
 }
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+  borderRadius: 10,
+};
+
 function GoToRegister(props) {
   let navigate = useNavigate();
   return (
@@ -90,16 +102,6 @@ const Login = () => {
       errorNote(error.response.data.non_field_errors[0]);
       setIsAuth(false);
     }
-  };
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    bgcolor: "background.paper",
-    boxShadow: 24,
-    p: 4,
-    borderRadius: 10,
   };
 
   return (
