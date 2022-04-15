@@ -90,7 +90,6 @@ const EditPost = () => {
           console.log(response.data);
           // console.log(response.data.body);
           setEditPost(response.data);
-          console.log(editPost);
         });
     } catch (error) {
       // console.log(error.response.status);
