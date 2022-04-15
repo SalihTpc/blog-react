@@ -38,10 +38,10 @@ const MyContainer = styled.div`
   justify-content: center;
   flex-direction: column;
 `;
-function getStyles(name, personName, theme) {
+function getStyles(name, categoryName, theme) {
   return {
     fontWeight:
-      personName.indexOf(name) === -1
+      categoryName.indexOf(name) === -1
         ? theme.typography.fontWeightRegular
         : theme.typography.fontWeightMedium,
   };
@@ -83,7 +83,7 @@ const AddNewPost = () => {
     image: "",
     body: "",
   };
-  const handleSubmit = async (values, { resetForm }) => {
+  const handleSubmit = async (values) => {
     // console.log(values);
     // console.log(values.category);
     // console.log(personName);
@@ -104,14 +104,13 @@ const AddNewPost = () => {
           // console.log(response.data);
           successNote(response.data.message);
         });
-      setMyChanges(!myChanges);
       navigate("/");
+      setMyChanges(!myChanges);
     } catch (error) {
       console.log(error.response.data);
       errorNote(error.response.data.title[0]);
     }
-
-    resetForm();
+    // setMyChanges(!myChanges);
   };
   return (
     <ThemeProvider theme={theme}>
@@ -177,6 +176,11 @@ const AddNewPost = () => {
                         value={values.category}
                         onChange={handleChange}
                         onBlur={handleBlur}
+                        inputProps={{
+                          style: {
+                            maxHeight: 100,
+                          },
+                        }}
                         helpertext={touched.username && errors.username}
                         error={touched.username && Boolean(errors.username)}
                         input={<OutlinedInput id="Tag" label="Category" />}
