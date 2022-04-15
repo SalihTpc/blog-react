@@ -14,7 +14,7 @@ const Comments = ({ comment }) => {
     <>
       <ListItem
         alignItems="flex-start"
-        sx={{ bgcolor: "#90caf9", borderRadius: "20px" }}
+        sx={{ bgcolor: "#90caf9", borderRadius: "20px", maxWidth: "100%" }}
       >
         <ListItemAvatar>
           <Avatar sx={{ bgcolor: grey[900] }} aria-label="recipe">
