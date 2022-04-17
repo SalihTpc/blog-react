@@ -72,11 +72,13 @@ const signUpValidationSchema = Yup.object().shape(
         is: (username) => !username || username.length === 0,
         then: Yup.string()
           .email()
-          .required("At least one of the fields is required"),
+          .required("At least one of the fields(email & username) is required"),
       }),
     username: Yup.string().when("email", {
       is: (email) => !email || email.length === 0,
-      then: Yup.string().required("At least one of the fields is required"),
+      then: Yup.string().required(
+        "At least one of the fields(email & username) is required"
+      ),
     }),
     password: Yup.string()
       .required("No password provided")
