@@ -46,7 +46,7 @@ const myStyle1 = {
 
 const MyCard = ({ anime }) => {
   let navigate = useNavigate();
-  const { myChanges, setMyChanges } = React.useContext(BlogContext);
+  const { isAuth, myChanges, setMyChanges } = React.useContext(BlogContext);
   const myId = anime.id;
   const [commentValue, setCommentValue] = React.useState("");
   const [open, setOpen] = React.useState(false);
@@ -96,6 +96,9 @@ const MyCard = ({ anime }) => {
   };
 
   const viewPost = async (id) => {
+    if (!sessionStorage.getItem("key")) {
+      navigate("/login");
+    }
     const value = { post: id };
     try {
       await axios
@@ -123,6 +126,9 @@ const MyCard = ({ anime }) => {
     }
   };
   const likePost = async (id) => {
+    if (!sessionStorage.getItem("key")) {
+      navigate("/login");
+    }
     const value = { post: id };
     try {
       await axios
@@ -141,7 +147,7 @@ const MyCard = ({ anime }) => {
         });
       setMyChanges(!myChanges);
     } catch (error) {
-      console.log(error.response.data);
+      // console.log(error.response.data);
       // errorNote(error.response.data.non_field_errors[0]);
       errorNote(
         error.response.data.detail || error.response.data.non_field_errors[0]
@@ -199,17 +205,29 @@ const MyCard = ({ anime }) => {
         sx={{ display: "flex", justifyContent: "space-around" }}
         disableSpacing
       >
-        <IconButton onClick={() => likePost(anime.id)} aria-label="like">
+        <IconButton
+          disabled={!isAuth}
+          onClick={() => likePost(anime.id)}
+          aria-label="like"
+        >
           <Badge badgeContent={anime.likes_count} color="error">
             <FavoriteIcon />
           </Badge>
         </IconButton>
-        <IconButton onClick={() => viewPost(anime.id)} aria-label="view">
+        <IconButton
+          disabled={!isAuth}
+          onClick={() => viewPost(anime.id)}
+          aria-label="view"
+        >
           <Badge badgeContent={anime.postviews_count} color="info">
             <VisibilityIcon />
           </Badge>
         </IconButton>
-        <IconButton onClick={handleOpen} aria-label="comment">
+        <IconButton
+          disabled={!isAuth}
+          onClick={handleOpen}
+          aria-label="comment"
+        >
           <Badge badgeContent={anime.comments_count} color="success">
             <CommentIcon />
           </Badge>
