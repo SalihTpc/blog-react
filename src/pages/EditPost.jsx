@@ -80,9 +80,9 @@ const EditPost = () => {
   const [myNotFound, setMyNotFound] = React.useState(null);
   const [categoryName, setCategoryName] = React.useState([]);
   // console.log(myChanges);
-  const getEditPost = async (id) => {
+  const getEditPost = (id) => {
     try {
-      await axios
+      axios
         .get(`https://blogsato-drf.herokuapp.com/api/list/${id}/`, {
           headers: { Authorization: `Token ${sessionStorage.getItem("key")}` },
         })
