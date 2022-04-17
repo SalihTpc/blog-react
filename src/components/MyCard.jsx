@@ -235,7 +235,7 @@ const MyCard = ({ anime }) => {
               }}
             >
               <div style={myStyle1}>
-                <InputLabel>Comment</InputLabel>
+                <InputLabel>Comment for {anime.title}</InputLabel>
                 <OutlinedInput
                   value={commentValue}
                   onChange={inputTextHandler}
