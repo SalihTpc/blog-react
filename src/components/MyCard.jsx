@@ -242,6 +242,7 @@ const MyCard = ({ anime }) => {
                   fullWidth
                   htmlFor="outlined-adornment-comment"
                   required
+                  autoFocus
                   id="comment"
                   name="comment"
                   endAdornment={
