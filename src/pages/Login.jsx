@@ -64,17 +64,29 @@ function GoToRegister(props) {
     </Link>
   );
 }
-const signUpValidationSchema = Yup.object().shape({
-  //! En az 2 karakter olması lazım. olmazsa yanına yazdığımız mesajı
-  email: Yup.string().email("Invalid Email"),
-  username: Yup.string().min(2, "Username must be at least 2 characters"),
-  password: Yup.string()
-    .required("No password provided")
-    .min(8, "Password is too short - should be 8 chars minimum")
-    .matches(/\d+/, "Password must have a number")
-    .matches(/[a-z]+/, "Password must have a lowercase")
-    .matches(/[A-Z]+/, "Password must have a uppercase"),
-});
+const signUpValidationSchema = Yup.object().shape(
+  {
+    email: Yup.string()
+      .email()
+      .when("username", {
+        is: (username) => !username || username.length === 0,
+        then: Yup.string()
+          .email()
+          .required("At least one of the fields is required"),
+      }),
+    username: Yup.string().when("email", {
+      is: (email) => !email || email.length === 0,
+      then: Yup.string().required("At least one of the fields is required"),
+    }),
+    password: Yup.string()
+      .required("No password provided")
+      .min(8, "Password is too short - should be 8 chars minimum")
+      .matches(/\d+/, "Password must have a number")
+      .matches(/[a-z]+/, "Password must have a lowercase")
+      .matches(/[A-Z]+/, "Password must have a uppercase"),
+  },
+  [["email", "username"]]
+);
 
 const theme = createTheme();
 const Login = () => {
