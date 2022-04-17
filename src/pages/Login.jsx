@@ -194,7 +194,6 @@ const Login = () => {
                   </Grid>
                 </Grid>
                 <TextField
-                  margin="normal"
                   required
                   fullWidth
                   name="password"
