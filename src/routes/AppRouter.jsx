@@ -4,7 +4,6 @@ import Navbar from "../components/Navbar";
 import About from "../pages/About";
 import AddNewPost from "../pages/AddNewPost";
 import CategoryDetail from "../pages/CategoryDetail";
-import EditPost from "../pages/EditPost";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import PasswordChange from "../pages/PasswordChange";
@@ -69,14 +68,6 @@ const AppRouter = () => {
           element={
             <RequireAuth redirectTo={"/login"}>
               <AddNewPost />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/edit-post/:id"
-          element={
-            <RequireAuth redirectTo={"/login"}>
-              <EditPost />
             </RequireAuth>
           }
         />

@@ -76,7 +76,21 @@ const EditPost = () => {
   const { id } = useParams();
   const { myCategories, myChanges, setMyChanges } =
     React.useContext(BlogContext);
-  const [editPost, setEditPost] = React.useState(null);
+  const [editPost, setEditPost] = React.useState({
+    body: "",
+    category: [],
+    comment_post: [],
+    comments_count: "",
+    id: "",
+    image: "",
+    like_post: [],
+    likes_count: "",
+    postview_post: [],
+    postviews_count: "",
+    since_creation: "",
+    title: "",
+    user: "",
+  });
   const [myNotFound, setMyNotFound] = React.useState(null);
   const [categoryName, setCategoryName] = React.useState([]);
   // console.log(myChanges);
@@ -98,15 +112,15 @@ const EditPost = () => {
   };
 
   console.log(editPost);
-  // const categoryList = editPost.category.map((cate) => cate.name);
-  // console.log(categoryList);
-  // const formValues = {
-  //   category: categoryList,
-  //   title: editPost.title,
-  //   image: editPost.image,
-  //   body: editPost.body,
-  // };
-  // console.log(formValues);
+  const categoryList = editPost.category.map((cate) => cate.name);
+  console.log(categoryList);
+  const formValues = {
+    category: categoryList,
+    title: editPost.title,
+    image: editPost.image,
+    body: editPost.body,
+  };
+  console.log(formValues);
 
   const initialValues = {
     category: [],
@@ -123,26 +137,26 @@ const EditPost = () => {
       return { name: val };
     });
     values.category = newCategory;
-    console.log(values.category);
-    // try {
-    //   await axios
-    //     .post("https://blogsato-drf.herokuapp.com/api/list/", values, {
-    //       headers: {
-    //         Authorization: `Token ${sessionStorage.getItem("key")}`,
-    //       },
-    //     })
-    //     .then(function (response) {
-    //       // console.log(response.data);
-    //       successNote(response.data.message);
-    //     });
-    //   setMyChanges(!myChanges);
-    //   navigate("/");
-    // } catch (error) {
-    //   console.log(error.response.data);
-    //   errorNote(error.response.data.title[0]);
-    // }
+    console.log(values);
+    try {
+      await axios
+        .put(`https://blogsato-drf.herokuapp.com/api/list/${id}/`, values, {
+          headers: {
+            Authorization: `Token ${sessionStorage.getItem("key")}`,
+          },
+        })
+        .then(function (response) {
+          // console.log(response.data);
+          successNote(response.data.message);
+        });
+      setMyChanges(!myChanges);
+      navigate("/");
+    } catch (error) {
+      console.log(error.response.data);
+      errorNote(error.response.data.title[0]);
+    }
 
-    // resetForm();
+    resetForm();
   };
 
   React.useEffect(() => {
@@ -180,8 +194,8 @@ const EditPost = () => {
               Add New Anime
             </Typography>
             <Formik
-              // initialValues={formValues || initialValues}
-              initialValues={initialValues}
+              initialValues={formValues || initialValues}
+              // initialValues={initialValues}
               onSubmit={handleSubmit}
               //! Yup ile hazırladığımız validationu buraya gönderiyoruz.
               validationSchema={signUpValidationSchema}
@@ -233,16 +247,16 @@ const EditPost = () => {
                           <Box
                             sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}
                           >
-                            {selected.map((value) => (
-                              <Chip key={value} label={value} />
+                            {selected.map((value, index) => (
+                              <Chip key={index} label={value} />
                             ))}
                           </Box>
                         )}
                         MenuProps={MenuProps}
                       >
-                        {myCategories.map((category) => (
+                        {myCategories.map((category, index) => (
                           <MenuItem
-                            key={category.id}
+                            key={index}
                             value={category.name}
                             style={getStyles(
                               category.name,

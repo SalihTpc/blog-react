@@ -376,15 +376,7 @@ const PostDetail = () => {
           ))}
         </Grid>
       )}
-      <ButtonGroup sx={{ m: 3 }} size="large" aria-label="large button group">
-        <Button
-          disabled={user?.username !== selectedPost.user}
-          onClick={() => navigate(`/edit-post/${myId}`)}
-          variant="contained"
-          size="large"
-        >
-          EDIT
-        </Button>
+      <ButtonGroup sx={{ m: 2 }} size="large" aria-label="large button group">
         <Button
           disabled={user?.username !== selectedPost.user}
           //
