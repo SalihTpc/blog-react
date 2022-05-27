@@ -127,7 +127,7 @@ const Navbar = () => {
             variant="h6"
             noWrap
             component="div"
-            sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
+            sx={{ mr: 2, display: { xs: "none", md: "flex" }, flex: 1 }}
             onClick={() => navigate("/")}
           >
             <NavLink
@@ -156,18 +156,20 @@ const Navbar = () => {
               />
             </NavLink>
           </Typography>
-          <Button
-            id="demo-customized-button"
-            aria-controls={open ? "demo-customized-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            variant="contained"
-            disableElevation
-            onClick={handleClick}
-            endIcon={<KeyboardArrowDownIcon />}
-          >
-            Categories
-          </Button>
+          <Typography sx={{ flex: 1, textAlign: "center" }} component="div">
+            <Button
+              id="demo-customized-button"
+              aria-controls={open ? "demo-customized-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+              variant="contained"
+              disableElevation
+              onClick={handleClick}
+              endIcon={<KeyboardArrowDownIcon />}
+            >
+              Categories
+            </Button>
+          </Typography>
           <StyledMenu
             id="demo-customized-menu"
             MenuListProps={{
@@ -195,9 +197,9 @@ const Navbar = () => {
             ))}
           </StyledMenu>
 
-          <Box>
+          <Box sx={{ flex: 1, textAlign: "end" }}>
             {user?.username ? (
-              <Tooltip title="Open settings">
+              <Tooltip title="Profile">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar
                     alt={user ? user.username[0].toUpperCase() : "S"}
@@ -206,7 +208,7 @@ const Navbar = () => {
                 </IconButton>
               </Tooltip>
             ) : (
-              <Tooltip title="Open settings">
+              <Tooltip title="Profile">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar alt={"S"} src="/static/images/avatar/2.jpg" />
                 </IconButton>
