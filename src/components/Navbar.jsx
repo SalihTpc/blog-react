@@ -146,7 +146,7 @@ const Navbar = () => {
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { mt: 2, xs: "flex", md: "none" } }}
+            sx={{ display: { mt: 2, xs: "flex", md: "none" }, flex: 1 }}
           >
             <NavLink style={{ textDecoration: "none" }} to={"/"}>
               <img
