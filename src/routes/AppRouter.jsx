@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import Loader from "../components/Loader";
 import Navbar from "../components/Navbar";
 import About from "../pages/About";
 import AddNewPost from "../pages/AddNewPost";
@@ -9,8 +10,10 @@ import Login from "../pages/Login";
 import PasswordChange from "../pages/PasswordChange";
 import PostDetail from "../pages/PostDetail";
 import Register from "../pages/Register";
+import { BlogContext } from "../store/BlogContext";
 
 const AppRouter = () => {
+  const { load } = useContext(BlogContext);
   function RequireAuth({ children, redirectTo }) {
     return sessionStorage.getItem("key") ? (
       children
@@ -27,7 +30,7 @@ const AppRouter = () => {
   }
   return (
     <BrowserRouter>
-      <Navbar />
+      {!load ? <Navbar /> : null}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route
