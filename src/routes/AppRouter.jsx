@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import Loader from "../components/Loader";
 import Navbar from "../components/Navbar";
 import About from "../pages/About";
 import AddNewPost from "../pages/AddNewPost";
